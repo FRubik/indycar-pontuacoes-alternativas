@@ -22,11 +22,15 @@ SIS = [
       desc="O inverso: tabela da IndyCar nos circuitos mistos e de rua, pontuação da F1 nos ovais. Um misto passa a valer o dobro de um oval."),
  dict(id="i30",nome="Proposta “Indy 30”",curta="Indy 30",
       desc="Proposta própria: 30-22-18-15-13-11-10-9-8-7-6-5-4-3-2 e 1 ponto do 16º em diante, com a Indy 500 valendo 1,5×. Mantém o degrau íngreme da F1 no topo, mas continua pagando a cauda do grid."),
+ dict(id="reta",nome="Curva reta",curta="Reta",
+      desc="A mesma amplitude da tabela da IndyCar — 50 pontos ao vencedor, 5 ao vigésimo sexto — mas distribuída em linha reta, com cada posição valendo 1,8 ponto a mais que a seguinte. É o oposto de todas as outras: em vez de premiar mais a vitória, premia menos."),
 ]
 def indy_tbl(p):
     t={1:50,2:40,3:35,4:32,5:30,6:28,7:26,8:24,9:22,10:20}
     return t[p] if p in t else (30-p if p<=25 else 5)
 def f1_tbl(p): return {1:25,2:18,3:15,4:12,5:10,6:8,7:6,8:4,9:2,10:1}.get(p,0)
+def reta_tbl(p):
+    return round(50 - 45*(p-1)/25) if p <= 26 else 5
 def cart_tbl(p):
     t={1:20,2:16,3:14,4:12,5:10,6:8,7:6,8:5,9:4,10:3,11:2,12:1}
     return t.get(p,0)
@@ -38,6 +42,7 @@ out=dict(sistemas=SIS,anos={},
   tabelas=dict(indy=[indy_tbl(p) for p in range(1,34)],
                f1=[f1_tbl(p) for p in range(1,34)],
                cart=[cart_tbl(p) for p in range(1,34)],
+               reta=[reta_tbl(p) for p in range(1,34)],
                indy30=[i30_tbl(p) for p in range(1,34)]))
 for ano,A in D.items():
     pil={}

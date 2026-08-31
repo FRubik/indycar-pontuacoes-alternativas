@@ -1,6 +1,6 @@
 # E se a IndyCar pontuasse diferente?
 
-Seis temporadas da IndyCar (2021–2026) recalculadas sob nove sistemas de pontuação
+Seis temporadas da IndyCar (2021–2026) recalculadas sob dez sistemas de pontuação
 diferentes, para separar o que dependia do regulamento do que era inevitável.
 
 **➜ [frubik.github.io/indycar-pontuacoes-alternativas](https://frubik.github.io/indycar-pontuacoes-alternativas/)**
@@ -14,8 +14,8 @@ no décimo. Trocar uma tabela pela outra mudaria os campeonatos recentes?
 
 ## A resposta
 
-Em **54 campeonatos recalculados** (6 temporadas × 9 réguas), o top 5 sai reordenado em 38
-das 48 comparações contra a régua base — mas **o título só troca de dono em dois casos, ambos
+Em **60 campeonatos recalculados** (6 temporadas × 10 réguas), o top 5 sai reordenado em 44
+das 54 comparações contra a régua base — mas **o título só troca de dono em dois casos, ambos
 em 2024**:
 
 - com a **última etapa valendo o dobro**, Herta é campeão no lugar de Palou (venceu Nashville,
@@ -26,10 +26,10 @@ Dobrar as duas etapas devolve o título a Palou: os multiplicadores se cancelam.
 argumento contra multiplicadores que os dados produzem — o campeão passa a depender de qual
 prova alguém decidiu privilegiar.
 
-Nos outros cinco anos o campeão resiste às nove réguas, porque na IndyCar recente quem ganha
+Nos outros cinco anos o campeão resiste às dez réguas, porque na IndyCar recente quem ganha
 costuma liderar em vitórias *e* em regularidade ao mesmo tempo.
 
-## As nove réguas
+## As dez réguas
 
 Todas partem **apenas da posição de chegada**. Nenhuma paga pole, volta liderada ou liderança
 de mais voltas — esses bônus existem no sistema real e aparecem só na coluna "Oficial", que
@@ -47,6 +47,7 @@ duas colunas é a curva de pontos.
 | 07 | Híbrido, peso no oval | IndyCar nos ovais, F1 nos mistos e de rua |
 | 08 | Híbrido, peso no misto | O inverso — experimento de controle |
 | 09 | Proposta "Indy 30" | 30-22-18-15-13… e 1 ponto do 16º em diante; Indy 500 1,5× |
+| 10 | Curva reta | Mesma amplitude da IndyCar (50 a 5), mas linear em vez de côncava |
 
 Quatro delas já existiram de verdade: **03** é a tabela da CART, usada por 21 anos e antecessora
 direta da IndyCar atual; **05** foi a regra da F1 em 2014 (durou uma temporada), **06** a da
@@ -57,6 +58,13 @@ A curva da CART é um meio-termo curioso: o pódio tem exatamente a mesma propor
 de hoje (100%, 80% e 70% de uma vitória), mas cai muito mais rápido depois e corta no 12º. Em
 2023 as três tabelas históricas dão **três terceiros lugares diferentes** — McLaughlin pela
 IndyCar, Newgarden pela F1 e O'Ward pela CART.
+
+A régua 10 vai na direção oposta de todas as outras. Em vez de premiar mais a vitória, premia
+menos: mantém a amplitude exata da tabela atual (50 ao vencedor, 5 ao 26º) e troca a curva
+côncava por uma reta, com o 2º valendo 96% de uma vitória em vez de 80%. Serve para testar o
+limite da pergunta — e nem no extremo o campeão muda. Mas **2021 termina empatado em 619 a
+619** entre Palou e Newgarden, decidido só no desempate por vitórias, e em 2022 Newgarden cai
+do 2º para o 5º lugar apesar das cinco vitórias.
 
 Como a Indy 500 valeu pontos dobrados até 2022, a régua 04 muda de sentido conforme o ano: em
 2021 e 2022 ela é a *regra da época* e a régua base mostra o ano **sem** a dobra; de 2023 em
@@ -100,7 +108,7 @@ passo grava seu resultado em `tools/`:
 
 ```bash
 python3 tools/1_fetch_wikipedia.py   # baixa e parseia o wikitext -> wiki_pos.json
-python3 tools/2_engine.py            # calcula as nove réguas    -> dados2.json
+python3 tools/2_engine.py            # calcula as dez réguas     -> dados2.json
 python3 tools/3_slim.py              # enxuga para a página      -> slim2.json
 python3 tools/4_style.py             # gera o CSS                -> style.css
 python3 tools/5_build.py             # monta o index.html na raiz

@@ -74,7 +74,10 @@ def cart_tbl(p):
 def i30_tbl(p):
     t={1:30,2:22,3:18,4:15,5:13,6:11,7:10,8:9,9:8,10:7,11:6,12:5,13:4,14:3,15:2}
     return t.get(p,1)
-TBL={"indy":indy_tbl,"f1":f1_tbl,"indy30":i30_tbl,"cart":cart_tbl}
+def reta_tbl(p):
+    # mesma amplitude da tabela da IndyCar (50 no 1º, 5 no 26º), distribuída em linha reta
+    return round(50 - 45*(p-1)/25) if p <= 26 else 5
+TBL={"indy":indy_tbl,"reta":reta_tbl,"f1":f1_tbl,"indy30":i30_tbl,"cart":cart_tbl}
 
 SISTEMAS=[
  dict(id="indy",nome="IndyCar, etapas iguais",curta="IndyCar",tbl="indy",x2=[],base=True),
@@ -86,6 +89,7 @@ SISTEMAS=[
  dict(id="hib",nome="Híbrido, peso no oval",curta="Oval pesado",tbl="hibrido",x2=[]),
  dict(id="hib2",nome="Híbrido, peso no misto",curta="Misto pesado",tbl="hibrido2",x2=[]),
  dict(id="i30",nome="Proposta “Indy 30”",curta="Indy 30",tbl="indy30",x2=["i500_15"]),
+ dict(id="reta",nome="Curva reta",curta="Reta",tbl="reta",x2=[]),
 ]
 def pts(tbl,pos,tipo):
     if tbl=="hibrido":  return indy_tbl(pos) if tipo=="oval" else f1_tbl(pos)
