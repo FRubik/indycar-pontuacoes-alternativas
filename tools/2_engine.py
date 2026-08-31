@@ -67,14 +67,19 @@ def indy_tbl(p):
     if p in t: return t[p]
     return 30-p if p<=25 else 5
 def f1_tbl(p):   return {1:25,2:18,3:15,4:12,5:10,6:8,7:6,8:4,9:2,10:1}.get(p,0)
+def cart_tbl(p):
+    # CART 1983-2003
+    t={1:20,2:16,3:14,4:12,5:10,6:8,7:6,8:5,9:4,10:3,11:2,12:1}
+    return t.get(p,0)
 def i30_tbl(p):
     t={1:30,2:22,3:18,4:15,5:13,6:11,7:10,8:9,9:8,10:7,11:6,12:5,13:4,14:3,15:2}
     return t.get(p,1)
-TBL={"indy":indy_tbl,"f1":f1_tbl,"indy30":i30_tbl}
+TBL={"indy":indy_tbl,"f1":f1_tbl,"indy30":i30_tbl,"cart":cart_tbl}
 
 SISTEMAS=[
  dict(id="indy",nome="IndyCar, etapas iguais",curta="IndyCar",tbl="indy",x2=[],base=True),
  dict(id="f1",nome="Fórmula 1",curta="F1",tbl="f1",x2=[]),
+ dict(id="cart",nome="CART 1983-2003",curta="CART",tbl="cart",x2=[]),
  dict(id="i500",nome="Indy 500 em dobro",curta="+Indy 500",tbl="indy",x2=["i500"]),
  dict(id="final",nome="Última etapa em dobro",curta="+Final",tbl="indy",x2=["final"]),
  dict(id="ambas",nome="Indy 500 e final em dobro",curta="+Ambas",tbl="indy",x2=["i500","final"]),

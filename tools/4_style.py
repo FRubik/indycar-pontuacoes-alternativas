@@ -4,7 +4,7 @@ CSS = r"""
   --ink:#16191B; --ink-2:#454B4F; --muted:#787E83; --rule:#DBDCD5; --rule-2:#C7C9C0;
   --accent:#0F7D57; --accent-soft:#E4F0EA; --gold:#8A6B12; --gold-soft:#F5EEDA;
   --up:#0F7D57; --down:#B4501E; --blue:#2F5FA8;
-  --s1:#0F7D57; --s2:#2F5FA8; --s3:#C25A22;
+  --s1:#0F7D57; --s2:#2F5FA8; --s3:#96417F; --s4:#C25A22;
   --shadow:0 1px 2px rgba(20,25,28,.05), 0 6px 20px -12px rgba(20,25,28,.18);
 }
 @media (prefers-color-scheme: dark){
@@ -13,7 +13,7 @@ CSS = r"""
     --ink:#E9EAE6; --ink-2:#B7BDC1; --muted:#8B9297; --rule:#2E343A; --rule-2:#3C444B;
     --accent:#2E9E73; --accent-soft:#15302A; --gold:#D4B25C; --gold-soft:#2C2718;
     --up:#2E9E73; --down:#CE7A3E; --blue:#5A88D4;
-    --s1:#2E9E73; --s2:#5A88D4; --s3:#CE7A3E;
+    --s1:#2E9E73; --s2:#5A88D4; --s3:#C066A8; --s4:#CE7A3E;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -14px rgba(0,0,0,.7);
   }
 }
@@ -22,7 +22,7 @@ CSS = r"""
   --ink:#E9EAE6; --ink-2:#B7BDC1; --muted:#8B9297; --rule:#2E343A; --rule-2:#3C444B;
   --accent:#2E9E73; --accent-soft:#15302A; --gold:#D4B25C; --gold-soft:#2C2718;
   --up:#2E9E73; --down:#CE7A3E; --blue:#5A88D4;
-  --s1:#2E9E73; --s2:#5A88D4; --s3:#CE7A3E;
+  --s1:#2E9E73; --s2:#5A88D4; --s3:#C066A8; --s4:#CE7A3E;
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -14px rgba(0,0,0,.7);
 }
 
@@ -100,7 +100,7 @@ h1 em{font-style:normal; color:var(--accent)}
 /* ---------- matriz ---------- */
 .matrix-scroll{overflow-x:auto; margin-top:26px; border:1px solid var(--rule);
   border-radius:3px; background:var(--surface); box-shadow:var(--shadow)}
-table.matrix{border-collapse:separate; border-spacing:0; width:100%; min-width:1235px}
+table.matrix{border-collapse:separate; border-spacing:0; width:100%; min-width:1360px}
 .matrix th,.matrix td{text-align:left; padding:0; vertical-align:top}
 .matrix thead th{
   position:sticky; top:0; background:var(--surface-2); border-bottom:1px solid var(--rule-2);

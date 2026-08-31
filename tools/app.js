@@ -6,6 +6,7 @@ const el = (t, c, h) => { const n = document.createElement(t); if (c) n.classNam
 const FORMULAS = {
   indy:"50 · 40 · 35 · 32 · 30 · 28 · 26 · 24 · 22 · 20 · 19 … 6 · 5 (25º e além)",
   f1:"25 · 18 · 15 · 12 · 10 · 8 · 6 · 4 · 2 · 1 · 0 …",
+  cart:"20 · 16 · 14 · 12 · 10 · 8 · 6 · 5 · 4 · 3 · 2 · 1 · 0 …",
   i500:"tabela IndyCar · Indy 500 × 2",
   final:"tabela IndyCar · última etapa × 2",
   ambas:"tabela IndyCar · Indy 500 × 2 · última etapa × 2",
@@ -17,6 +18,7 @@ const FORMULAS = {
    A Indy 500 valeu pontos dobrados de 2014 a 2022, então duas colunas mudam de sentido por época. */
 const SUB = {
   f1:    "só o top 10 pontua",
+  cart:  "top 12, tabela dos anos 90",
   final: "última etapa vale 2×",
   ambas: "Indy 500 e final 2×",
   hib:   "IndyCar no oval, F1 no misto",
@@ -179,11 +181,12 @@ function painelAno(ano){
 const CURVAS = [
   {id:"indy",   nome:"IndyCar",   cor:"var(--s1)", key:"indy"},
   {id:"f1",     nome:"Fórmula 1", cor:"var(--s2)", key:"f1"},
-  {id:"indy30", nome:"Indy 30",   cor:"var(--s3)", key:"indy30"},
+  {id:"cart",   nome:"CART",      cor:"var(--s3)", key:"cart"},
+  {id:"indy30", nome:"Indy 30",   cor:"var(--s4)", key:"indy30"},
 ];
 const NPOS = 25;
 function grafico(){
-  const W = 780, H = 340, m = {t:14, r:96, b:42, l:46};
+  const W = 780, H = 362, m = {t:14, r:104, b:44, l:46};
   const iw = W - m.l - m.r, ih = H - m.t - m.b;
   const x = p => m.l + (p - 1) / (NPOS - 1) * iw;
   const y = v => m.t + (1 - v / 100) * ih;
@@ -203,8 +206,14 @@ function grafico(){
   series.forEach(se => {
     const d = se.vals.map((v,j) => (j?"L":"M") + x(j+1).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
     s += '<path d="'+d+'" fill="none" stroke="'+se.cor+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
-    const lx = x(NPOS)+10, ly = y(se.vals[NPOS-1]) + (se.id==="f1" ? -9 : (se.id==="indy30" ? 6 : -1));
-    s += '<text class="dlabel" x="'+lx+'" y="'+(ly+4)+'" fill="'+se.cor+'">'+se.nome+"</text>";
+  });
+  // rótulos diretos à direita: empurra para baixo o que colidiria (várias curvas terminam em zero)
+  const GAP = 13;
+  const rot = series.map(se => ({nome:se.nome, cor:se.cor, y:y(se.vals[NPOS-1])}))
+                    .sort((a,b) => a.y - b.y);
+  rot.forEach((r,i) => { if (i && r.y - rot[i-1].y < GAP) r.y = rot[i-1].y + GAP; });
+  rot.forEach(r => {
+    s += '<text class="dlabel" x="'+(x(NPOS)+12)+'" y="'+(r.y+4).toFixed(1)+'" fill="'+r.cor+'">'+r.nome+"</text>";
   });
   s += '<g id="hov" style="opacity:0"><line class="hovline" y1="'+m.t+'" y2="'+(m.t+ih)+'"/>';
   series.forEach((se,i) => s += '<circle r="4.5" fill="'+se.cor+'" stroke="var(--surface)" stroke-width="2" data-s="'+i+'"/>');
@@ -244,7 +253,7 @@ function painelPontuacao(){
   w.appendChild(head);
   w.appendChild(el("p","section-intro",
     "Primeiro como a IndyCar realmente pontua — a tabela, os bônus e a regra que mudou em 2023. "+
-    "Depois a comparação numérica entre as tabelas de pontos que as oito réguas usam."));
+    "Depois a comparação numérica entre as tabelas de pontos que as nove réguas usam."));
 
   /* --- o sistema real --- */
   w.appendChild(el("h3","subhead","O sistema da IndyCar hoje"));
@@ -303,7 +312,7 @@ function painelPontuacao(){
     "Os dados desta página dão razão a Frye — em seis temporadas, dobrar ou não a Indy 500 nunca trocou um campeão."));
 
   w.appendChild(el("p","note wide",
-    'As oito réguas em si estão descritas na aba <a href="#p-reguas">As réguas</a>. '+
+    'As nove réguas em si estão descritas na aba <a href="#p-reguas">As réguas</a>. '+
     "O que segue é a comparação numérica entre as três tabelas de pontos usadas por elas."));
 
   /* --- gráfico --- */
@@ -311,12 +320,13 @@ function painelPontuacao(){
   const fig = el("figure","chart");
   fig.innerHTML =
     '<div class="chart-title">O que cada tabela paga, em relação à vitória</div>'+
-    '<div class="chart-sub">Pontos de cada posição como porcentagem dos pontos de uma vitória — as três tabelas na mesma escala.</div>'+
+    '<div class="chart-sub">Pontos de cada posição como porcentagem dos pontos de uma vitória — as quatro tabelas na mesma escala.</div>'+
     '<div class="chartlegend">'+ CURVAS.map(c => '<span><i style="background:'+c.cor+'"></i>'+c.nome+"</span>").join("") +"</div>"+
     '<div class="svgbox">'+ g.svg +'<div id="tip"></div></div>'+
     "<figcaption>A IndyCar nunca desce muito: um décimo lugar ainda vale 40% de uma vitória e o último colocado leva 10%. "+
-    "A F1 desaba — o décimo vale 4% e o décimo primeiro, nada. A proposta “Indy 30” copia o degrau íngreme da F1 nos cinco "+
-    "primeiros e depois estica uma cauda rasa até o fim do grid, em vez de cortá-la.</figcaption>";
+    "A F1 desaba — o décimo vale 4% e o décimo primeiro, nada. A CART fica no meio: pódio idêntico ao da IndyCar "+
+    "(80% e 70%), queda rápida depois e corte no décimo segundo. A proposta “Indy 30” copia o degrau íngreme da F1 nos "+
+    "cinco primeiros e depois estica uma cauda rasa até o fim do grid, em vez de cortá-la.</figcaption>";
   w.appendChild(fig);
 
   const card = el("figure","chart");
@@ -345,6 +355,7 @@ function painelPontuacao(){
 const EXPLICA = [
  {id:"indy", ex:"É a coluna verde nas tabelas de cada ano. As setas ▲▼ nas outras colunas contam quantas posições o piloto sobe ou desce em relação a ela."},
  {id:"f1",   ex:"Em 2023, McLaughlin é terceiro na tabela da IndyCar com uma vitória e catorze top 10. Na da F1 ele cai para quinto e Newgarden, com quatro vitórias mas só onze top 10, assume o terceiro lugar."},
+ {id:"cart", ex:"Em 2023 as três tabelas históricas produzem <b>três terceiros lugares diferentes</b>: McLaughlin pela IndyCar, Newgarden pela F1 e O'Ward pela CART. E em 2026 ela é a única das nove réguas que dá o vice a Kirkwood em vez de Lundgaard."},
  {id:"i500", ex:"Em 2022 é o que garante o quarto lugar a Ericsson, vencedor das 500 Milhas. Sem a dobra ele cai para sexto — duas posições que dependiam de uma corrida só."},
  {id:"final",ex:"É a única régua que muda um campeão sem mexer no calendário: em 2024 dá o título a Herta, que venceu Nashville enquanto Palou terminava em décimo primeiro."},
  {id:"ambas",ex:"Em 2024 os dois multiplicadores se anulam e o título volta para Palou, que foi quinto na Indy 500 — onde Herta foi vigésimo terceiro."},
@@ -353,8 +364,9 @@ const EXPLICA = [
  {id:"i30",  ex:"Na prática ela se comporta como a tabela da F1 no topo do campeonato e como a da IndyCar no meio do pelotão. Em cinco dos seis anos devolve o mesmo top 5 da régua da F1."},
 ];
 const TEXTO = {
- indy:"A tabela que a IndyCar usa hoje: <b>50 pontos ao vencedor, 40 ao segundo, 35 ao terceiro</b>, descendo até 5 pontos para quem terminar em 25º ou pior. Todas as corridas do ano valem o mesmo. É a régua contra a qual as outras sete são comparadas.<br><br><b>Em 2021 e 2022 ela ganha um segundo sentido.</b> A Indy 500 valia pontos dobrados naqueles anos, então dar peso igual a todas as etapas equivale a <em>remover a dobra</em> — por isso a coluna aparece rotulada como “sem a dobra da Indy 500” nessas duas abas. É a resposta à pergunta: como o campeonato teria terminado se as 500 Milhas valessem o mesmo que as outras provas?",
+ indy:"A tabela que a IndyCar usa hoje: <b>50 pontos ao vencedor, 40 ao segundo, 35 ao terceiro</b>, descendo até 5 pontos para quem terminar em 25º ou pior. Todas as corridas do ano valem o mesmo. É a régua contra a qual as outras oito são comparadas.<br><br><b>Em 2021 e 2022 ela ganha um segundo sentido.</b> A Indy 500 valia pontos dobrados naqueles anos, então dar peso igual a todas as etapas equivale a <em>remover a dobra</em> — por isso a coluna aparece rotulada como “sem a dobra da Indy 500” nessas duas abas. É a resposta à pergunta: como o campeonato teria terminado se as 500 Milhas valessem o mesmo que as outras provas?",
  f1:"A tabela da Fórmula 1 atual: <b>25-18-15-12-10-8-6-4-2-1</b>, sem o ponto de volta rápida (a F1 o aboliu em 2025). Duas diferenças grandes em relação à IndyCar.<br><br>A primeira é o <b>degrau do topo</b>: na IndyCar, o segundo lugar vale 80% de uma vitória; na F1, 72%. A segunda, e maior, é o <b>corte</b>: do décimo primeiro em diante ninguém pontua, enquanto na IndyCar até o último colocado leva 5 pontos. Na prática, favorece quem vence e faz pódio e penaliza quem termina muitas corridas entre o oitavo e o décimo quinto lugar.",
+ cart:"A tabela que a <b>CART</b> usou de 1983 a 2003, quando era a principal categoria do automobilismo americano e antecessora direta da IndyCar de hoje: <b>20-16-14-12-10-8-6-5-4-3-2-1</b>, pontuando até o décimo segundo lugar.<br><br>O que a torna interessante é que ela é <b>exatamente intermediária</b> entre as duas tabelas modernas. O pódio tem a mesma proporção da IndyCar atual — 100%, 80% e 70% de uma vitória — mas a partir do quarto lugar a curva desce muito mais rápido, e o corte no décimo segundo fica entre o décimo da F1 e a cauda sem fim da IndyCar. Ela premia o pódio como a IndyCar e o meio do pelotão como a F1, o que a faz produzir resultados que nenhuma das outras duas produz.",
  i500:"Mantém a tabela da IndyCar, mas as <b>500 Milhas de Indianápolis pagam o dobro</b>: 100 pontos ao vencedor em vez de 50, 80 ao segundo, e assim por diante.<br><br>Não é invenção — foi a regra real da IndyCar <b>de 2014 a 2022</b>, abolida em 2023. Por isso esta coluna significa coisas diferentes conforme o ano: em 2021 e 2022 ela é <em>o que de fato aconteceu</em>; de 2023 em diante é uma proposta de trazer a regra de volta.",
  final:"A tabela da IndyCar com a <b>última corrida do ano valendo o dobro</b>, no espírito do finale da NASCAR. A ideia é impedir que o título seja decidido antes da prova final e garantir que a decisão tenha público.<br><br>É o multiplicador mais agressivo do conjunto, porque concentra o desempate numa corrida só — e é o único que efetivamente troca um campeão em seis temporadas.",
  ambas:"As duas réguas anteriores aplicadas juntas: <b>Indy 500 e última etapa valendo o dobro</b>. Serve para testar o que acontece quando se privilegia ao mesmo tempo a corrida mais importante do ano e a que decide o campeonato.<br><br>O resultado é o melhor argumento contra multiplicadores em geral: eles podem se cancelar, e aí o campeão passa a depender de qual etapa alguém decidiu privilegiar.",
@@ -369,7 +381,7 @@ function painelReguas(){
   w.appendChild(head);
   w.appendChild(el("p","section-intro",
     "Uma <b>régua</b> é um jeito de transformar a posição de chegada em pontos de campeonato. "+
-    "Esta página recalcula seis temporadas da IndyCar sob oito delas, para ver quais resultados dependiam do "+
+    "Esta página recalcula seis temporadas da IndyCar sob nove delas, para ver quais resultados dependiam do "+
     "regulamento e quais eram inevitáveis. Todas usam <em>apenas</em> a ordem de chegada de cada prova — nenhuma "+
     "paga pole, volta liderada ou liderança de mais voltas."));
 
@@ -392,16 +404,16 @@ function painelReguas(){
   w.appendChild(el("h3","subhead","Três dessas réguas não são invenções"));
   w.appendChild(el("p","note wide",
     "Dobrar a pontuação de uma corrida soa como exercício de fã, mas é uma ideia que as duas categorias já "+
-    "colocaram em prática — e abandonaram. As réguas 03, 04 e 05 desta página reconstroem regras que existiram de verdade."));
+    "colocaram em prática — e abandonaram. As réguas 04, 05 e 06 desta página reconstroem regras que existiram de verdade."));
   const hist = el("div","hist");
   [["IndyCar","2014","Dobro nas três provas de 500 milhas",
     "Indy 500, Pocono e Fontana. Uma retomada de tradição: nos anos 1950 a Indy 500 chegou a valer 1000 pontos contra 200 de uma corrida comum."],
    ["Fórmula 1","2014","Dobro na última corrida",
-    "Ideia de Bernie Ecclestone para segurar audiência até Abu Dhabi. Durou <b>uma temporada</b>: a reação de equipes e público foi tão ruim que a FIA a revogou antes de 2015. Não chegou a alterar o título — Hamilton venceria de qualquer forma. É exatamente a régua 04."],
+    "Ideia de Bernie Ecclestone para segurar audiência até Abu Dhabi. Durou <b>uma temporada</b>: a reação de equipes e público foi tão ruim que a FIA a revogou antes de 2015. Não chegou a alterar o título — Hamilton venceria de qualquer forma. É exatamente a régua 05."],
    ["IndyCar","2015–2019","Dobro na Indy 500 e na final",
-    "A final passou a valer o dobro independentemente de ser oval, misto ou rua. É exatamente a régua 05."],
+    "A final passou a valer o dobro independentemente de ser oval, misto ou rua. É exatamente a régua 06."],
    ["IndyCar","2020–2022","Dobro só na Indy 500",
-    "A final voltou ao peso normal. É a régua 03, e é o sistema sob o qual as temporadas de 2021 e 2022 desta página foram disputadas."],
+    "A final voltou ao peso normal. É a régua 04, e é o sistema sob o qual as temporadas de 2021 e 2022 desta página foram disputadas."],
    ["IndyCar","2023–hoje","Nenhum multiplicador",
     "Todas as corridas valem igual. O então presidente Jay Frye justificou dizendo que a dobra <em>nunca havia alterado quem ganhou um campeonato</em> — o que os números desta página confirmam."]
   ].forEach(([cat, ano, tit, txt]) => {
@@ -461,7 +473,7 @@ function painelPanorama(){
     });
   });
   w.appendChild(el("p","section-intro",
-    "Seis temporadas × oito réguas = <b>"+total+"</b> campeonatos recalculados. Confrontadas com a régua base, as sete "+
+    "Seis temporadas × nove réguas = <b>"+total+"</b> campeonatos recalculados. Confrontadas com a régua base, as oito "+
     "réguas alternativas reordenam o top 5 em <b>"+reord+"</b> das <b>"+(6*(SIS.length-1))+"</b> comparações — mas o troféu "+
     "só troca de dono em <b>"+trocas+"</b> delas, ambas em 2024."));
 

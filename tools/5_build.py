@@ -3,7 +3,7 @@ import json
 
 ANALISES = {
 "2021": """
-<p><span class="drv">Palou</span> é campeão nas oito réguas, com folga em todas. Abaixo dele, porém, 2021 é o melhor
+<p><span class="drv">Palou</span> é campeão nas nove réguas, com folga em todas. Abaixo dele, porém, 2021 é o melhor
 laboratório da coleção para uma pergunta específica: <em>o que a dobra da Indy 500 fazia?</em></p>
 <p>A regra estava em vigor, então a coluna <strong>+Indy 500</strong> é o sistema real da época e a régua base mostra o
 ano sem ela. Tirar a dobra troca o terceiro lugar: <span class="drv">O'Ward</span>, que foi quarto nas 500 Milhas, cai
@@ -18,7 +18,7 @@ O'Ward, que abandonou ali, cai para quinto.</p>
 "2022": """
 <p>O ano em que a régua deveria importar e não importou. <span class="drv">Power</span> foi campeão com <em>uma</em>
 vitória, contra cinco de <span class="drv">Newgarden</span> e três de <span class="drv">McLaughlin</span> — exatamente
-o perfil de campeão que se acusa a tabela achatada da IndyCar de fabricar. E ele vence nas oito réguas, inclusive na da
+o perfil de campeão que se acusa a tabela achatada da IndyCar de fabricar. E ele vence nas nove réguas, inclusive na da
 F1, porque a regularidade dele não era de décimos lugares: foram <strong>nove pódios em dezessete provas</strong>. A
 pontuação da F1 pune o sétimo lugar, não o segundo.</p>
 <p>A dobra da Indy 500 ainda valia, e 2022 mostra o maior efeito dela em seis anos. <span class="drv">Ericsson</span>
@@ -35,12 +35,17 @@ quando a final vale dobrado, porque venceu Laguna Seca.</p>
 história para virar proposta. Reintroduzir o multiplicador promoveria <span class="drv">Newgarden</span>, vencedor das
 500 Milhas, de quinto a terceiro — mas não chega perto do título.</p>
 <p>Título e vice estão fechados em qualquer régua: <span class="drv">Palou</span> com cinco vitórias e dez pódios em
-dezessete provas, <span class="drv">Dixon</span> em segundo nas oito. A disputa é pelo terceiro lugar, e ela é
+dezessete provas, <span class="drv">Dixon</span> em segundo nas nove. A disputa é pelo terceiro lugar, e ela é
 inteiramente uma questão de tabela.</p>
 <p><span class="drv">McLaughlin</span> somou uma vitória, quatro pódios e catorze top 10. Newgarden somou quatro
 vitórias, cinco pódios e apenas onze top 10. Na tabela da IndyCar o primeiro é terceiro e o segundo é quinto; na F1, no
 híbrido e na Indy 30 a ordem se inverte exatamente. É o caso mais limpo do conjunto: as mesmas duas temporadas produzem
 posições opostas conforme se pague pela vitória ou pela presença.</p>
+<p>E há um terceiro nome nessa disputa. As três tabelas que realmente existiram dão <strong>três pódios
+diferentes</strong>: pela IndyCar o terceiro lugar é de McLaughlin, pela F1 é de Newgarden e pela CART é de
+<span class="drv">O'Ward</span> — que não venceu nenhuma corrida no ano, mas fez sete pódios. A tabela da CART paga o
+pódio como a IndyCar e corta o meio do pelotão como a F1, e essa combinação favorece exatamente o piloto que sobe muito
+ao pódio sem ganhar.</p>
 """,
 "2024": """
 <p><strong>O único ano em que o troféu troca de mãos — e troca duas vezes.</strong></p>
@@ -62,7 +67,7 @@ Ele foi quinto na Indy 500 e Herta, vigésimo terceiro; os dois multiplicadores 
 qual prova alguém decidiu privilegiar, o multiplicador está decidindo mais do que a temporada.</p>
 """,
 "2025": """
-<p>Oito vitórias em dezessete provas. Nenhuma das oito réguas chega perto de ameaçar <span class="drv">Palou</span> — e todas
+<p>Oito vitórias em dezessete provas. Nenhuma das nove réguas chega perto de ameaçar <span class="drv">Palou</span> — e todas
 apenas <em>ampliam</em> o que já era uma temporada desproporcional: a vantagem sobre <span class="drv">O'Ward</span>
 passa de 37% na régua base para 72% na pontuação da F1. Curvas mais íngremes não criam campeões novos, engrandecem o
 que já existe.</p>
@@ -76,7 +81,7 @@ nono para sexto na régua da F1 e cai para décimo terceiro no híbrido.</p>
 """,
 "2026": """
 <p>Temporada em andamento, com dezessete das dezoito etapas disputadas — falta apenas Laguna Seca.
-<span class="drv">Palou</span> lidera nas oito réguas e seis vitórias em catorze top 10 não deixam margem para a tabela
+<span class="drv">Palou</span> lidera nas nove réguas e seis vitórias em catorze top 10 não deixam margem para a tabela
 interferir no título.</p>
 <p>A briga é pelo vice, e aqui a régua importa de verdade. Na tabela em vigor,
 <span class="drv">Lundgaard</span> é segundo, <span class="drv">Kirkwood</span> terceiro e
@@ -102,7 +107,7 @@ HTML = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pontuações Alternativas da IndyCar</title>
-<meta name="description" content="Seis temporadas da IndyCar (2021–2026) recalculadas sob oito sistemas de pontuação diferentes, incluindo o da Fórmula 1.">
+<meta name="description" content="Seis temporadas da IndyCar (2021–2026) recalculadas sob nove sistemas de pontuação diferentes, incluindo o da Fórmula 1.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
@@ -116,18 +121,18 @@ __CSS__
   <div class="wrap">
     <div class="mast-grid">
       <div>
-        <span class="eyebrow">IndyCar · 2021–2026 · oito sistemas de pontuação</span>
+        <span class="eyebrow">IndyCar · 2021–2026 · nove sistemas de pontuação</span>
         <h1>E se a IndyCar<br>pontuasse <em>diferente</em>?</h1>
         <p class="lead">
           Hoje uma vitória na IndyCar vale 50 pontos e o segundo lugar, 40 — uma curva muito mais achatada que a da
           Fórmula 1, onde a mesma distância custa 25 contra 18 e o décimo primeiro lugar não vale nada. Seis temporadas
-          completas foram recalculadas aqui sob oito réguas diferentes, sempre a partir da posição de chegada real de
+          completas foram recalculadas aqui sob nove réguas diferentes, sempre a partir da posição de chegada real de
           cada prova. A pergunta é simples: <strong>o campeonato teria dado outro resultado?</strong>
         </p>
       </div>
       <div class="keyfigs">
-        <div class="keyfig"><div class="n">48</div><div class="l">campeonatos recalculados<br>6 anos × 8 réguas</div></div>
-        <div class="keyfig"><div class="n">33</div><div class="l">com o top 5 reordenado<br>de 42 comparações</div></div>
+        <div class="keyfig"><div class="n">54</div><div class="l">campeonatos recalculados<br>6 anos × 9 réguas</div></div>
+        <div class="keyfig"><div class="n">38</div><div class="l">com o top 5 reordenado<br>de 48 comparações</div></div>
         <div class="keyfig"><div class="n hit">2</div><div class="l">com outro campeão<br>ambos em 2024</div></div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 # E se a IndyCar pontuasse diferente?
 
-Seis temporadas da IndyCar (2021–2026) recalculadas sob oito sistemas de pontuação
+Seis temporadas da IndyCar (2021–2026) recalculadas sob nove sistemas de pontuação
 diferentes, para separar o que dependia do regulamento do que era inevitável.
 
 **➜ [frubik.github.io/indycar-pontuacoes-alternativas](https://frubik.github.io/indycar-pontuacoes-alternativas/)**
@@ -14,8 +14,8 @@ no décimo. Trocar uma tabela pela outra mudaria os campeonatos recentes?
 
 ## A resposta
 
-Em **48 campeonatos recalculados** (6 temporadas × 8 réguas), o top 5 sai reordenado em 33
-das 42 comparações contra a régua base — mas **o título só troca de dono em dois casos, ambos
+Em **54 campeonatos recalculados** (6 temporadas × 9 réguas), o top 5 sai reordenado em 38
+das 48 comparações contra a régua base — mas **o título só troca de dono em dois casos, ambos
 em 2024**:
 
 - com a **última etapa valendo o dobro**, Herta é campeão no lugar de Palou (venceu Nashville,
@@ -26,10 +26,10 @@ Dobrar as duas etapas devolve o título a Palou: os multiplicadores se cancelam.
 argumento contra multiplicadores que os dados produzem — o campeão passa a depender de qual
 prova alguém decidiu privilegiar.
 
-Nos outros cinco anos o campeão resiste às oito réguas, porque na IndyCar recente quem ganha
+Nos outros cinco anos o campeão resiste às nove réguas, porque na IndyCar recente quem ganha
 costuma liderar em vitórias *e* em regularidade ao mesmo tempo.
 
-## As oito réguas
+## As nove réguas
 
 Todas partem **apenas da posição de chegada**. Nenhuma paga pole, volta liderada ou liderança
 de mais voltas — esses bônus existem no sistema real e aparecem só na coluna "Oficial", que
@@ -40,18 +40,25 @@ duas colunas é a curva de pontos.
 |---|---|---|
 | 01 | IndyCar, etapas iguais | 50-40-35-32-30… até 5. Régua base de comparação |
 | 02 | Fórmula 1 | 25-18-15-12-10-8-6-4-2-1; só o top 10 pontua |
-| 03 | Indy 500 em dobro | Tabela IndyCar, 500 Milhas valendo 2× |
-| 04 | Última etapa em dobro | Tabela IndyCar, decisão do campeonato valendo 2× |
-| 05 | Indy 500 e final em dobro | As duas anteriores juntas |
-| 06 | Híbrido, peso no oval | IndyCar nos ovais, F1 nos mistos e de rua |
-| 07 | Híbrido, peso no misto | O inverso — experimento de controle |
-| 08 | Proposta "Indy 30" | 30-22-18-15-13… e 1 ponto do 16º em diante; Indy 500 1,5× |
+| 03 | CART 1983–2003 | 20-16-14-12-10-8-6-5-4-3-2-1; pontua até o 12º |
+| 04 | Indy 500 em dobro | Tabela IndyCar, 500 Milhas valendo 2× |
+| 05 | Última etapa em dobro | Tabela IndyCar, decisão do campeonato valendo 2× |
+| 06 | Indy 500 e final em dobro | As duas anteriores juntas |
+| 07 | Híbrido, peso no oval | IndyCar nos ovais, F1 nos mistos e de rua |
+| 08 | Híbrido, peso no misto | O inverso — experimento de controle |
+| 09 | Proposta "Indy 30" | 30-22-18-15-13… e 1 ponto do 16º em diante; Indy 500 1,5× |
 
-Três delas não são invenções: **04** foi a regra da F1 em 2014 (durou uma temporada), **05** foi
-a da IndyCar de 2015 a 2019 e **03** de 2020 a 2022. A IndyCar aboliu os multiplicadores em
-2023 alegando que nunca haviam alterado um campeonato — o que os números aqui confirmam.
+Quatro delas já existiram de verdade: **03** é a tabela da CART, usada por 21 anos e antecessora
+direta da IndyCar atual; **05** foi a regra da F1 em 2014 (durou uma temporada), **06** a da
+IndyCar de 2015 a 2019 e **04** a de 2020 a 2022. A IndyCar aboliu os multiplicadores em 2023
+alegando que nunca haviam alterado um campeonato — o que os números aqui confirmam.
 
-Como a Indy 500 valeu pontos dobrados até 2022, a régua 03 muda de sentido conforme o ano: em
+A curva da CART é um meio-termo curioso: o pódio tem exatamente a mesma proporção da IndyCar
+de hoje (100%, 80% e 70% de uma vitória), mas cai muito mais rápido depois e corta no 12º. Em
+2023 as três tabelas históricas dão **três terceiros lugares diferentes** — McLaughlin pela
+IndyCar, Newgarden pela F1 e O'Ward pela CART.
+
+Como a Indy 500 valeu pontos dobrados até 2022, a régua 04 muda de sentido conforme o ano: em
 2021 e 2022 ela é a *regra da época* e a régua base mostra o ano **sem** a dobra; de 2023 em
 diante a relação se inverte. As colunas são rotuladas de acordo em cada aba.
 
@@ -93,7 +100,7 @@ passo grava seu resultado em `tools/`:
 
 ```bash
 python3 tools/1_fetch_wikipedia.py   # baixa e parseia o wikitext -> wiki_pos.json
-python3 tools/2_engine.py            # calcula as oito réguas    -> dados2.json
+python3 tools/2_engine.py            # calcula as nove réguas    -> dados2.json
 python3 tools/3_slim.py              # enxuga para a página      -> slim2.json
 python3 tools/4_style.py             # gera o CSS                -> style.css
 python3 tools/5_build.py             # monta o index.html na raiz

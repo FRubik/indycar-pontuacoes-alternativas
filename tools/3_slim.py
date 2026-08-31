@@ -8,6 +8,8 @@ SIS = [
       desc="A tabela de posições em vigor na IndyCar (50-40-35-32-30…), aplicada só pela posição de chegada, com todas as etapas valendo o mesmo. É a régua de comparação."),
  dict(id="f1",nome="Fórmula 1",curta="F1",
       desc="25-18-15-12-10-8-6-4-2-1. Só o top 10 pontua, e não há bônus de volta rápida (a F1 aboliu o ponto extra em 2025)."),
+ dict(id="cart",nome="CART 1983–2003",curta="CART",
+      desc="A tabela que a CART usou por 21 anos, antecessora direta da IndyCar atual: 20-16-14-12-10-8-6-5-4-3-2-1, pontuando até o 12º lugar."),
  dict(id="i500",nome="Indy 500 em dobro",curta="+Indy 500",
       desc="A tabela da IndyCar com as 500 Milhas valendo pontuação dobrada."),
  dict(id="final",nome="Última etapa em dobro",curta="+Final",
@@ -25,6 +27,9 @@ def indy_tbl(p):
     t={1:50,2:40,3:35,4:32,5:30,6:28,7:26,8:24,9:22,10:20}
     return t[p] if p in t else (30-p if p<=25 else 5)
 def f1_tbl(p): return {1:25,2:18,3:15,4:12,5:10,6:8,7:6,8:4,9:2,10:1}.get(p,0)
+def cart_tbl(p):
+    t={1:20,2:16,3:14,4:12,5:10,6:8,7:6,8:5,9:4,10:3,11:2,12:1}
+    return t.get(p,0)
 def i30_tbl(p):
     t={1:30,2:22,3:18,4:15,5:13,6:11,7:10,8:9,9:8,10:7,11:6,12:5,13:4,14:3,15:2}
     return t.get(p,1)
@@ -32,6 +37,7 @@ def i30_tbl(p):
 out=dict(sistemas=SIS,anos={},
   tabelas=dict(indy=[indy_tbl(p) for p in range(1,34)],
                f1=[f1_tbl(p) for p in range(1,34)],
+               cart=[cart_tbl(p) for p in range(1,34)],
                indy30=[i30_tbl(p) for p in range(1,34)]))
 for ano,A in D.items():
     pil={}
