@@ -1,0 +1,10 @@
+# Dados de origem: as tabelas de classificação das temporadas, copiadas da
+# Wikipédia. Não são versionadas — ver "Os dados" no README.
+Indy*.txt
+
+# Artefatos gerados pelo pipeline (tools/). Todos reconstruíveis: ver README.
+tools/*.wiki
+tools/wiki_pos.json
+tools/dados2.json
+tools/slim2.json
+tools/style.css

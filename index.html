@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pontuações Alternativas da IndyCar</title>
+<meta name="description" content="Seis temporadas da IndyCar (2021–2026) recalculadas sob oito sistemas de pontuação diferentes, incluindo o da Fórmula 1.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+
+:root{
+  --paper:#F2F2EE; --surface:#FFFFFF; --surface-2:#FAFAF8; --raise:#EDEDE7;
+  --ink:#16191B; --ink-2:#454B4F; --muted:#787E83; --rule:#DBDCD5; --rule-2:#C7C9C0;
+  --accent:#0F7D57; --accent-soft:#E4F0EA; --gold:#8A6B12; --gold-soft:#F5EEDA;
+  --up:#0F7D57; --down:#B4501E; --blue:#2F5FA8;
+  --s1:#0F7D57; --s2:#2F5FA8; --s3:#C25A22;
+  --shadow:0 1px 2px rgba(20,25,28,.05), 0 6px 20px -12px rgba(20,25,28,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131619; --surface:#1B1F23; --surface-2:#20252A; --raise:#262C31;
+    --ink:#E9EAE6; --ink-2:#B7BDC1; --muted:#8B9297; --rule:#2E343A; --rule-2:#3C444B;
+    --accent:#2E9E73; --accent-soft:#15302A; --gold:#D4B25C; --gold-soft:#2C2718;
+    --up:#2E9E73; --down:#CE7A3E; --blue:#5A88D4;
+    --s1:#2E9E73; --s2:#5A88D4; --s3:#CE7A3E;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131619; --surface:#1B1F23; --surface-2:#20252A; --raise:#262C31;
+  --ink:#E9EAE6; --ink-2:#B7BDC1; --muted:#8B9297; --rule:#2E343A; --rule-2:#3C444B;
+  --accent:#2E9E73; --accent-soft:#15302A; --gold:#D4B25C; --gold-soft:#2C2718;
+  --up:#2E9E73; --down:#CE7A3E; --blue:#5A88D4;
+  --s1:#2E9E73; --s2:#5A88D4; --s3:#CE7A3E;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif;
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px; margin:0 auto; padding:0 24px}
+h1,h2,h3,h4{margin:0; text-wrap:balance; font-weight:700; letter-spacing:-.017em}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:2px}
+
+.eyebrow{
+  font-size:11px; font-weight:600; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--muted); font-family:"IBM Plex Mono",ui-monospace,monospace;
+}
+
+/* ---------- cabeçalho ---------- */
+.masthead{border-bottom:1px solid var(--rule); background:var(--surface)}
+.masthead .wrap{padding-top:44px; padding-bottom:34px}
+.mast-grid{display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:52px; align-items:end}
+h1{font-size:clamp(34px,5vw,54px); line-height:1.03; margin:14px 0 0}
+h1 em{font-style:normal; color:var(--accent)}
+.lead{
+  font-family:"Source Serif 4",Georgia,serif; font-size:17px; line-height:1.62;
+  color:var(--ink-2); max-width:62ch; margin-top:18px;
+}
+.keyfigs{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule);
+  border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.keyfig{background:var(--surface); padding:14px 16px}
+.keyfig .n{font-family:"IBM Plex Mono",monospace; font-size:28px; font-weight:600;
+  letter-spacing:-.03em; font-variant-numeric:tabular-nums; line-height:1.1}
+.keyfig .n.hit{color:var(--gold)}
+.keyfig .l{font-size:11.5px; color:var(--muted); line-height:1.35; margin-top:4px}
+
+/* ---------- abas ---------- */
+.tabbar{position:sticky; top:0; z-index:20; background:var(--surface);
+  border-bottom:1px solid var(--rule); box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.tabbar .wrap{display:flex; align-items:center; gap:2px}
+#tabs{scrollbar-width:thin}
+.tab{
+  appearance:none; background:none; border:0; cursor:pointer; white-space:nowrap;
+  font-family:inherit; font-size:13.5px; font-weight:600; color:var(--muted);
+  padding:14px 15px 12px; border-bottom:2px solid transparent; letter-spacing:.005em;
+}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--accent)}
+.tab.sep{margin-left:auto}
+.themebtn{appearance:none; background:none; border:0; cursor:pointer; color:var(--muted);
+  padding:0 4px 0 14px; font-size:15px; line-height:1}
+.themebtn:hover{color:var(--ink)}
+
+/* ---------- painel ---------- */
+.panel{display:none; padding:40px 0 72px}
+.panel.on{display:block}
+.panel-head{display:flex; flex-wrap:wrap; align-items:flex-end; gap:10px 28px; margin-bottom:6px}
+.panel-head h2{font-size:38px; letter-spacing:-.028em; line-height:1; font-weight:700}
+.panel-head h2.ano{font-family:"IBM Plex Mono",monospace; font-weight:600; letter-spacing:-.03em}
+.ctx{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:12.5px; color:var(--muted);
+  padding-bottom:4px}
+.ctx b{color:var(--ink-2); font-weight:600}
+
+.notice{
+  display:flex; gap:11px; margin:20px 0 0; padding:12px 15px; border-radius:3px;
+  background:var(--gold-soft); border-left:2px solid var(--gold);
+  font-size:13px; line-height:1.5; color:var(--ink-2); max-width:none;
+}
+.notice b{color:var(--ink)}
+.notice .mk{font-family:"IBM Plex Mono",monospace; color:var(--gold); font-weight:600; flex:none}
+
+/* ---------- matriz ---------- */
+.matrix-scroll{overflow-x:auto; margin-top:26px; border:1px solid var(--rule);
+  border-radius:3px; background:var(--surface); box-shadow:var(--shadow)}
+table.matrix{border-collapse:separate; border-spacing:0; width:100%; min-width:1235px}
+.matrix th,.matrix td{text-align:left; padding:0; vertical-align:top}
+.matrix thead th{
+  position:sticky; top:0; background:var(--surface-2); border-bottom:1px solid var(--rule-2);
+  padding:11px 12px 10px; font-size:11.5px; font-weight:700; letter-spacing:.045em;
+  text-transform:uppercase; color:var(--ink-2); line-height:1.25; white-space:nowrap;
+}
+.matrix thead th .sub{display:block; font-weight:500; text-transform:none; letter-spacing:0;
+  font-size:10px; color:var(--muted); margin-top:3px; font-family:"IBM Plex Mono",monospace;
+  white-space:normal; line-height:1.3; max-width:15em}
+.matrix thead th.ruler{color:var(--accent)}
+.matrix thead th.official{color:var(--muted)}
+.matrix th.poscol,.matrix td.poscol{
+  width:44px; text-align:center; font-family:"IBM Plex Mono",monospace;
+  font-variant-numeric:tabular-nums; color:var(--muted); font-size:12px;
+  background:var(--surface-2); border-right:1px solid var(--rule);
+  position:sticky; left:0; z-index:2;
+}
+.matrix thead th.poscol{z-index:4}
+.matrix td.poscol{padding:10px 0; font-weight:600}
+.matrix tbody tr:not(:last-child) td{border-bottom:1px solid var(--rule)}
+.matrix tbody tr.champrow td{background:var(--gold-soft)}
+.matrix tbody tr.champrow td.poscol{background:var(--gold-soft); color:var(--gold); font-weight:700}
+.cell{padding:9px 12px; min-width:128px; display:block; border-left:1px solid transparent;
+  transition:background .09s linear}
+.cell .nm{display:block; font-size:13.5px; font-weight:600; letter-spacing:-.005em;
+  line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.cell .row2{display:flex; align-items:baseline; gap:7px; margin-top:1px}
+.cell .pt{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.cell .dl{font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600;
+  font-variant-numeric:tabular-nums}
+.dl.up{color:var(--up)} .dl.down{color:var(--down)}
+td.is-ruler .cell{background:var(--accent-soft)}
+td.is-official .cell{color:var(--ink-2)}
+td.is-official .cell .nm{font-weight:500}
+tbody tr:first-child .cell .nm{font-weight:700}
+.matrix td.hl .cell{background:var(--raise)}
+.matrix td.hl.is-ruler .cell{background:var(--accent-soft); box-shadow:inset 0 0 0 1px var(--accent)}
+.matrix td.hl .cell .nm{color:var(--ink)}
+.champbar td{border-bottom:1px solid var(--rule-2) !important}
+.champbar .cell{padding:7px 12px 8px; background:var(--surface-2)}
+.champbar .nm{font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--muted)}
+.champbar td.diff .cell{background:var(--gold-soft)}
+.champbar td.diff .nm{color:var(--gold)}
+
+.legendrow{display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:11px; font-size:11.5px;
+  color:var(--muted); align-items:center}
+.legendrow .sw{display:inline-block; width:11px; height:11px; border-radius:2px;
+  vertical-align:-1px; margin-right:6px}
+
+/* ---------- análise ---------- */
+.analysis{margin-top:38px; display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:44px;
+  align-items:start}
+.analysis h3{font-size:13px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted);
+  font-weight:700; margin-bottom:12px}
+.prose{font-family:"Source Serif 4",Georgia,serif; font-size:16.5px; line-height:1.68;
+  color:var(--ink-2); max-width:66ch}
+.prose p+p{margin-top:14px}
+.prose strong{color:var(--ink); font-weight:600}
+.prose em{color:var(--ink); font-style:italic}
+.prose .drv{font-family:"Archivo",sans-serif; font-weight:600; font-size:15.5px; color:var(--ink)}
+.sidecard{background:var(--surface); border:1px solid var(--rule); border-radius:3px;
+  padding:16px 17px; font-size:13px}
+.sidecard h4{font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted);
+  margin-bottom:11px}
+.sidecard table{width:100%; border-collapse:collapse; font-size:12.5px}
+.sidecard td{padding:4px 0; border-bottom:1px solid var(--rule)}
+.sidecard tr:last-child td{border-bottom:0}
+.sidecard td:last-child{text-align:right; font-family:"IBM Plex Mono",monospace;
+  font-variant-numeric:tabular-nums; color:var(--ink-2)}
+.stagelist{display:flex; flex-wrap:wrap; gap:4px; margin-top:4px}
+.stg{font-family:"IBM Plex Mono",monospace; font-size:10.5px; padding:2px 6px; border-radius:2px;
+  background:var(--surface-2); border:1px solid var(--rule); color:var(--muted); white-space:nowrap}
+.stg.oval{background:var(--accent-soft); border-color:color-mix(in srgb,var(--accent) 30%,transparent);
+  color:var(--accent)}
+.stg.i5{border-color:var(--gold); color:var(--gold); background:var(--gold-soft); font-weight:600}
+.stg.fin{border-style:dashed; border-color:var(--rule-2); color:var(--ink-2)}
+.stg.off{opacity:.5; text-decoration:line-through}
+
+/* ---------- sistemas ---------- */
+.syslist{display:grid; grid-template-columns:repeat(auto-fill,minmax(292px,1fr)); gap:14px;
+  margin-top:26px}
+.syscard{background:var(--surface); padding:17px 18px 18px; border:1px solid var(--rule);
+  border-radius:3px; display:flex; flex-direction:column}
+.syscard.ref{background:var(--surface-2); border-style:dashed}
+.syscard .formula{margin-top:auto; padding-top:10px}
+.syscard .tag{font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--muted);
+  letter-spacing:.06em}
+.syscard h4{font-size:16px; margin:5px 0 8px; letter-spacing:-.012em}
+.syscard p{font-size:13.5px; color:var(--ink-2); line-height:1.56}
+.formula{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--accent);
+  margin-top:10px; letter-spacing:-.01em; word-spacing:-.05em}
+
+figure.chart{margin:34px 0 0; background:var(--surface); border:1px solid var(--rule);
+  border-radius:3px; padding:20px 22px 16px; box-shadow:var(--shadow)}
+figure.chart figcaption{font-size:12.5px; color:var(--muted); margin-top:12px; line-height:1.5;
+  max-width:70ch}
+.chart-title{font-size:15px; font-weight:700; letter-spacing:-.01em}
+.chart-sub{font-size:12.5px; color:var(--muted); margin-top:2px}
+.chartlegend{display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 6px; font-size:12.5px}
+.chartlegend span{display:flex; align-items:center; gap:7px; color:var(--ink-2)}
+.chartlegend i{width:14px; height:2px; border-radius:1px; display:block}
+.svgbox{position:relative; overflow-x:auto}
+svg.curves{display:block; width:100%; height:auto; min-width:520px}
+.gridline{stroke:var(--rule); stroke-width:1}
+.axistext{fill:var(--muted); font-size:10.5px; font-family:"IBM Plex Mono",monospace}
+.axislabel{fill:var(--muted); font-size:10.5px; font-family:"Archivo",sans-serif;
+  letter-spacing:.06em; text-transform:uppercase}
+.dlabel{font-size:11.5px; font-weight:700; font-family:"Archivo",sans-serif}
+.hovline{stroke:var(--rule-2); stroke-width:1; stroke-dasharray:3 3}
+#tip{position:absolute; pointer-events:none; background:var(--surface); border:1px solid var(--rule-2);
+  border-radius:3px; padding:8px 10px; font-size:12px; box-shadow:var(--shadow); opacity:0;
+  transition:opacity .1s; min-width:140px; z-index:5}
+#tip .th{font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+  color:var(--muted); margin-bottom:5px}
+#tip .tr{display:flex; align-items:center; gap:7px; justify-content:space-between;
+  font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+#tip .tr i{width:9px; height:9px; border-radius:2px; flex:none}
+#tip .tr span:first-of-type{flex:1; font-family:"Archivo",sans-serif}
+
+table.ptable{border-collapse:collapse; width:100%; margin-top:14px; font-size:12px;
+  font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+.ptable th,.ptable td{padding:5px 4px; text-align:right; border-bottom:1px solid var(--rule)}
+.ptable th:first-child,.ptable td:first-child{text-align:left; font-family:"Archivo",sans-serif;
+  font-weight:600; white-space:nowrap; padding-right:14px}
+.ptable thead th{color:var(--muted); font-weight:600; font-family:"IBM Plex Mono",monospace;
+  border-bottom:1px solid var(--rule-2)}
+.ptable td.zero{color:var(--rule-2)}
+
+/* ---------- panorama ---------- */
+table.grid2{border-collapse:separate; border-spacing:0; width:100%; margin-top:24px;
+  background:var(--surface); border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.grid2 th,.grid2 td{padding:11px 13px; text-align:left; font-size:13px;
+  border-bottom:1px solid var(--rule)}
+.grid2 thead th{background:var(--surface-2); font-size:11px; text-transform:uppercase;
+  letter-spacing:.05em; color:var(--ink-2); border-bottom:1px solid var(--rule-2); white-space:nowrap}
+.grid2 tbody tr:last-child td{border-bottom:0}
+.grid2 td.yr{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--ink)}
+.grid2 td.same{color:var(--ink-2)}
+.grid2 td.chg{background:var(--gold-soft); color:var(--gold); font-weight:700}
+.bignum{font-family:"IBM Plex Mono",monospace; font-size:64px; font-weight:600;
+  letter-spacing:-.045em; line-height:1; color:var(--accent)}
+
+.section-intro{font-family:"Source Serif 4",Georgia,serif; font-size:17px; line-height:1.65;
+  color:var(--ink-2); max-width:64ch; margin-top:14px}
+.blockquote{border-left:2px solid var(--accent); padding-left:20px; margin-top:30px;
+  font-family:"Source Serif 4",Georgia,serif; font-size:19px; line-height:1.5; color:var(--ink);
+  max-width:52ch}
+
+footer.foot{border-top:1px solid var(--rule); background:var(--surface); margin-top:0}
+footer.foot .wrap{padding:30px 24px 44px; display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:28px}
+footer.foot h4{font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted);
+  margin-bottom:8px}
+footer.foot p{font-size:12.5px; color:var(--ink-2); line-height:1.6}
+footer.foot code{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--accent)}
+
+
+/* ---------- novos componentes ---------- */
+.subhead{font-size:13px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted);
+  font-weight:700; margin:44px 0 16px; padding-bottom:9px; border-bottom:1px solid var(--rule)}
+.subhead.sm{margin:0 0 10px; border:0; padding:0; font-size:12.5px}
+.note{font-size:12.5px; color:var(--muted); line-height:1.55; margin-top:11px}
+.note.wide{max-width:74ch; margin-top:14px; font-size:13px}
+.prose.sm{font-size:15.5px}
+.fourup{display:grid; grid-template-columns:repeat(auto-fit,minmax(238px,1fr)); gap:34px; margin-top:44px}
+
+/* grade de pontos por posição */
+.grade{display:grid; grid-template-columns:repeat(auto-fit,minmax(66px,1fr)); gap:5px; margin-top:4px}
+.gp{background:var(--surface); border:1px solid var(--rule); border-radius:3px; padding:8px 4px 7px;
+  text-align:center; display:flex; flex-direction:column; gap:1px}
+.gp-pos{font-size:10.5px; color:var(--muted); font-family:"IBM Plex Mono",monospace; letter-spacing:.02em}
+.gp-pts{font-family:"IBM Plex Mono",monospace; font-size:17px; font-weight:600; color:var(--ink);
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.gp.sc{background:var(--accent-soft); border-color:color-mix(in srgb,var(--accent) 24%,transparent)}
+.gp.sc .gp-pts{color:var(--accent)}
+.gp.top{border-color:var(--accent)}
+.gp.resto{background:var(--surface-2); border-style:dashed}
+.gp.resto .gp-pts{color:var(--muted)}
+
+/* bônus */
+.bonuslist{display:grid; grid-template-columns:repeat(auto-fit,minmax(272px,1fr)); gap:10px; margin-top:22px}
+.bonus{background:var(--surface); padding:13px 15px; display:flex; gap:13px; align-items:flex-start;
+  border:1px solid var(--rule); border-radius:3px}
+.bonus .bv{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:14px; color:var(--accent);
+  min-width:38px; text-align:right; font-variant-numeric:tabular-nums; flex:none; padding-top:1px}
+.bonus > span:last-child{display:flex; flex-direction:column; gap:2px}
+.bonus b{font-size:13.5px; font-weight:600}
+.bonus span span{font-size:12.5px; color:var(--muted); line-height:1.45}
+
+/* linha do tempo da regra */
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:12px; margin-top:20px}
+.era{border:1px solid var(--rule); border-radius:3px; padding:15px 17px 16px; background:var(--surface);
+  border-top:2px solid var(--rule-2)}
+.era.now{border-top-color:var(--accent); background:var(--surface)}
+.era > b{display:block; font-size:16px; margin:6px 0 7px; letter-spacing:-.012em}
+.era p b{font-weight:600; color:var(--ink)}
+.era p{font-size:13.5px; color:var(--ink-2); line-height:1.56}
+.era.now > b{color:var(--accent)}
+
+.syscard.base{border-color:var(--accent)}
+.syscard.base .tag{color:var(--accent)}
+.matrix thead th .sub.mark{color:var(--gold); font-weight:600}
+.matrix thead th.ruler .sub.mark{color:var(--accent)}
+.stagelist.legenda{margin-top:13px; padding-top:11px; border-top:1px solid var(--rule)}
+.grid2 td.yr .mini{display:block; font-family:"Archivo",sans-serif; font-size:10px; font-weight:600;
+  color:var(--gold); letter-spacing:.04em; margin-top:2px}
+
+
+/* ---------- aba de abertura: as réguas ---------- */
+.reguas{display:flex; flex-direction:column; gap:14px; margin-top:28px}
+.regua{display:grid; grid-template-columns:74px minmax(0,1fr); gap:4px;
+  background:var(--surface); border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.regua.base{border-color:var(--accent)}
+.rnum{background:var(--surface-2); display:flex; flex-direction:column; align-items:center;
+  justify-content:flex-start; gap:7px; padding:17px 8px; border-right:1px solid var(--rule)}
+.rnum > span:first-child{font-family:"IBM Plex Mono",monospace; font-size:20px; font-weight:600;
+  color:var(--muted); letter-spacing:-.03em; line-height:1}
+.regua.base .rnum{background:var(--accent-soft); border-right-color:var(--accent)}
+.regua.base .rnum > span:first-child{color:var(--accent)}
+.rbadge{font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--accent); border:1px solid var(--accent); border-radius:2px; padding:1px 5px}
+.rbody{padding:17px 20px 18px; min-width:0; display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,280px); gap:6px 28px;
+  grid-template-areas:"h h" "f f" "p e"; align-content:start}
+.rbody h3{grid-area:h}
+.rbody .formula{grid-area:f}
+.rbody > p{grid-area:p}
+.rbody .exemplo{grid-area:e; align-self:start}
+.rbody h3{font-size:19px; letter-spacing:-.018em; margin-bottom:7px}
+.rbody .formula{margin:0 0 12px; padding:0}
+.rbody > p{font-family:"Source Serif 4",Georgia,serif; font-size:16px; line-height:1.62;
+  color:var(--ink-2); max-width:74ch}
+.rbody > p b{color:var(--ink); font-weight:600}
+.exemplo{margin-top:8px; padding:12px 15px; background:var(--surface-2); border-radius:3px;
+  border-left:2px solid var(--rule-2); font-size:13.5px; line-height:1.55; color:var(--ink-2);
+  max-width:80ch}
+.regua.base .exemplo{border-left-color:var(--accent)}
+.exlabel{display:block; font-size:9.5px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.1em; color:var(--muted); margin-bottom:4px; font-family:"Archivo",sans-serif}
+
+/* guia de leitura */
+.guia{display:grid; grid-template-columns:repeat(auto-fit,minmax(258px,1fr)); gap:12px; margin-top:20px}
+.gitem{display:flex; gap:13px; align-items:flex-start; background:var(--surface);
+  border:1px solid var(--rule); border-radius:3px; padding:13px 15px}
+.gic{flex:none; width:34px; display:flex; align-items:center; justify-content:center; padding-top:2px}
+.gitem b{font-size:13.5px; display:block; margin-bottom:3px}
+.gitem p{font-size:12.5px; color:var(--muted); line-height:1.5}
+.gnum{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--muted);
+  font-variant-numeric:tabular-nums}
+
+
+/* histórico dos multiplicadores */
+.hist{display:flex; flex-direction:column; gap:1px; margin-top:20px; background:var(--rule);
+  border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.hitem{background:var(--surface); padding:14px 17px; display:grid;
+  grid-template-columns:150px minmax(0,1fr); gap:20px; align-items:start}
+.hitem.atual{background:var(--accent-soft)}
+.hmeta{display:flex; flex-direction:column; gap:2px}
+.hcat{font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--muted)}
+.hano{font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:600; color:var(--ink);
+  font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+.hitem.atual .hano, .hitem.atual .hcat{color:var(--accent)}
+.hitem > div > b{font-size:14px; display:block; margin-bottom:3px; letter-spacing:-.01em}
+.hitem p b{font-weight:600; color:var(--ink)}
+.hitem p{font-size:13px; color:var(--ink-2); line-height:1.55; max-width:78ch}
+@media (max-width:620px){ .hitem{grid-template-columns:1fr; gap:6px} }
+
+@media (max-width:860px){
+  .rbody{grid-template-columns:1fr; grid-template-areas:"h" "f" "p" "e"}
+  .rbody .exemplo{margin-top:14px}
+}
+@media (max-width:640px){
+  .regua{grid-template-columns:1fr}
+  .rnum{flex-direction:row; justify-content:flex-start; padding:9px 16px;
+    border-right:0; border-bottom:1px solid var(--rule)}
+  .regua.base .rnum{border-right:0; border-bottom-color:var(--accent)}
+}
+
+@media (max-width:900px){
+  .mast-grid{grid-template-columns:1fr; gap:26px; align-items:start}
+  .analysis{grid-template-columns:1fr; gap:26px}
+  h1{font-size:32px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important}}
+
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="mast-grid">
+      <div>
+        <span class="eyebrow">IndyCar · 2021–2026 · oito sistemas de pontuação</span>
+        <h1>E se a IndyCar<br>pontuasse <em>diferente</em>?</h1>
+        <p class="lead">
+          Hoje uma vitória na IndyCar vale 50 pontos e o segundo lugar, 40 — uma curva muito mais achatada que a da
+          Fórmula 1, onde a mesma distância custa 25 contra 18 e o décimo primeiro lugar não vale nada. Seis temporadas
+          completas foram recalculadas aqui sob oito réguas diferentes, sempre a partir da posição de chegada real de
+          cada prova. A pergunta é simples: <strong>o campeonato teria dado outro resultado?</strong>
+        </p>
+      </div>
+      <div class="keyfigs">
+        <div class="keyfig"><div class="n">48</div><div class="l">campeonatos recalculados<br>6 anos × 8 réguas</div></div>
+        <div class="keyfig"><div class="n">33</div><div class="l">com o top 5 reordenado<br>de 42 comparações</div></div>
+        <div class="keyfig"><div class="n hit">2</div><div class="l">com outro campeão<br>ambos em 2024</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="Temporadas">
+  <div class="wrap">
+    <div id="tabs" role="tablist" style="display:flex;align-items:stretch;gap:2px;overflow-x:auto;flex:1"></div>
+    <button type="button" id="theme" class="themebtn" aria-label="Alternar tema claro e escuro" title="Alternar tema">&#9681;</button>
+  </div>
+</nav>
+
+<main id="app"></main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <h4>Como foi calculado</h4>
+      <p>Toda régua parte <em>apenas</em> da posição de chegada de cada prova. Nenhuma paga pole, volta liderada ou
+      liderança de mais voltas — bônus que existem no sistema real e que aparecem só na coluna “Oficial”. Empates são
+      desfeitos pelo critério da F1: mais vitórias, depois mais segundos lugares, e assim por diante. A aba
+      <a href="#p-pontuacao">Pontuação</a> detalha cada tabela.</p>
+    </div>
+    <div>
+      <h4>Cobertura</h4>
+      <p>Todas as 102 provas das seis temporadas entram nos cálculos, com uma exceção declarada: Laguna Seca 2026, que
+      ainda não foi disputada. O Thermal Club de 2024 fica de fora por não ter valido pontos de campeonato. Nos anos em
+      que a Indy 500 valia dobro (2021 e 2022) as colunas estão rotuladas de acordo.</p>
+    </div>
+    <div>
+      <h4>Fontes</h4>
+      <p>Pontos e classificação oficial: arquivos <code>Indy2021.txt</code> … <code>Indy2026.txt</code>, cuja soma
+      confere com o total de cada piloto nos seis anos. Posições de chegada, calendários e tipo de piso: tabelas de
+      classificação das temporadas na Wikipédia — que conferem com os arquivos em 1698 das 1700 células comparáveis.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const DATA = {"sistemas":[{"id":"indy","nome":"IndyCar, etapas iguais","curta":"IndyCar","desc":"A tabela de posições em vigor na IndyCar (50-40-35-32-30…), aplicada só pela posição de chegada, com todas as etapas valendo o mesmo. É a régua de comparação."},{"id":"f1","nome":"Fórmula 1","curta":"F1","desc":"25-18-15-12-10-8-6-4-2-1. Só o top 10 pontua, e não há bônus de volta rápida (a F1 aboliu o ponto extra em 2025)."},{"id":"i500","nome":"Indy 500 em dobro","curta":"+Indy 500","desc":"A tabela da IndyCar com as 500 Milhas valendo pontuação dobrada."},{"id":"final","nome":"Última etapa em dobro","curta":"+Final","desc":"A tabela da IndyCar com a decisão do campeonato valendo o dobro, no espírito do finale da NASCAR."},{"id":"ambas","nome":"Indy 500 e final em dobro","curta":"+Ambas","desc":"As duas etapas de maior apelo — a corrida mais importante do ano e a decisão do título — valendo o dobro."},{"id":"hib","nome":"Híbrido, peso no oval","curta":"Oval pesado","desc":"Tabela da IndyCar nos ovais, pontuação da F1 nos circuitos mistos e de rua. Um oval passa a valer o dobro de um misto."},{"id":"hib2","nome":"Híbrido, peso no misto","curta":"Misto pesado","desc":"O inverso: tabela da IndyCar nos circuitos mistos e de rua, pontuação da F1 nos ovais. Um misto passa a valer o dobro de um oval."},{"id":"i30","nome":"Proposta “Indy 30”","curta":"Indy 30","desc":"Proposta própria: 30-22-18-15-13-11-10-9-8-7-6-5-4-3-2 e 1 ponto do 16º em diante, com a Indy 500 valendo 1,5×. Mantém o degrau íngreme da F1 no topo, mas continua pagando a cauda do grid."}],"anos":{"2021":{"rank":{"indy":["A. Palou","J. Newgarden","S. Dixon","P. O'Ward","C. Herta","M. Ericsson","G. Rahal","S. Pagenaud","W. Power","A. Rossi","T. Sato","S. McLaughlin","J. Harvey","R. van Kalmthout","R. Grosjean","S. Bourdais","R. Hunter-Reay","E. Jones","C. Daly","J. Hinchcliffe","F. Rosenqvist","D. Kellett","M. Chilton","S. Ferrucci","J. Johnson","H. Castroneves"],"f1":["A. Palou","J. Newgarden","P. O'Ward","S. Dixon","C. Herta","M. Ericsson","G. Rahal","W. Power","A. Rossi","S. Pagenaud","R. Grosjean","R. van Kalmthout","J. Harvey","S. McLaughlin","T. Sato","H. Castroneves","S. Bourdais","R. Hunter-Reay","S. Ferrucci","J. Hinchcliffe","F. Rosenqvist","E. Jones","M. Chilton","C. Daly","D. Kellett","J. Johnson"],"i500":["A. Palou","J. Newgarden","P. O'Ward","S. Dixon","M. Ericsson","C. Herta","G. Rahal","S. Pagenaud","W. Power","A. Rossi","T. Sato","J. Harvey","S. McLaughlin","R. van Kalmthout","R. Grosjean","S. Bourdais","R. Hunter-Reay","C. Daly","E. Jones","J. Hinchcliffe","F. Rosenqvist","H. Castroneves","D. Kellett","S. Ferrucci","M. Chilton","J. Johnson"],"final":["A. Palou","J. Newgarden","S. Dixon","C. Herta","P. O'Ward","M. Ericsson","G. Rahal","S. Pagenaud","W. Power","A. Rossi","T. Sato","J. Harvey","S. McLaughlin","R. van Kalmthout","S. Bourdais","R. Grosjean","R. Hunter-Reay","E. Jones","J. Hinchcliffe","C. Daly","F. Rosenqvist","D. Kellett","M. Chilton","J. Johnson","S. Ferrucci","H. Castroneves"],"ambas":["A. Palou","J. Newgarden","S. Dixon","P. O'Ward","C. Herta","M. Ericsson","S. Pagenaud","G. Rahal","W. Power","A. Rossi","T. Sato","J. Harvey","S. McLaughlin","R. van Kalmthout","S. Bourdais","R. Grosjean","R. Hunter-Reay","E. Jones","C. Daly","J. Hinchcliffe","F. Rosenqvist","H. Castroneves","D. Kellett","M. Chilton","S. Ferrucci","J. Johnson"],"hib":["A. Palou","J. Newgarden","P. O'Ward","S. Dixon","C. Herta","M. Ericsson","G. Rahal","S. Pagenaud","W. Power","A. Rossi","R. van Kalmthout","S. McLaughlin","T. Sato","J. Harvey","R. Grosjean","R. Hunter-Reay","S. Bourdais","F. Rosenqvist","J. Hinchcliffe","H. Castroneves","C. Daly","E. Jones","D. Kellett","S. Ferrucci","M. Chilton","J. Johnson"],"hib2":["A. Palou","J. Newgarden","S. Dixon","C. Herta","P. O'Ward","M. Ericsson","G. Rahal","W. Power","A. Rossi","S. Pagenaud","R. Grosjean","T. Sato","J. Harvey","S. McLaughlin","R. van Kalmthout","S. Bourdais","E. Jones","R. Hunter-Reay","J. Hinchcliffe","C. Daly","F. Rosenqvist","M. Chilton","J. Johnson","S. Ferrucci","D. Kellett","H. Castroneves"],"i30":["A. Palou","J. Newgarden","P. O'Ward","S. Dixon","C. Herta","M. Ericsson","G. Rahal","W. Power","S. Pagenaud","A. Rossi","R. Grosjean","R. van Kalmthout","T. Sato","S. McLaughlin","J. Harvey","S. Bourdais","R. Hunter-Reay","H. Castroneves","E. Jones","S. Ferrucci","F. Rosenqvist","C. Daly","J. Hinchcliffe","D. Kellett","M. Chilton","J. Johnson"],"oficial":["A. Palou","J. Newgarden","P. O'Ward","S. Dixon","C. Herta","M. Ericsson","G. Rahal","S. Pagenaud","W. Power","A. Rossi","T. Sato","R. van Kalmthout","J. Harvey","S. McLaughlin","R. Grosjean","S. Bourdais","R. Hunter-Reay","C. Daly","E. Jones","J. Hinchcliffe","F. Rosenqvist","H. Castroneves","D. Kellett","S. Ferrucci","M. Chilton","J. Johnson"]},"pilotos":{"A. Palou":{"eq":"Chip Ganassi Racing","of":549,"ofp":1,"s":{"indy":494,"f1":192,"i500":534,"final":526,"ambas":566,"hib":264,"hib2":422,"i30":254},"v":3,"pd":8,"t10":12,"i5":2,"fi":4},"J. Newgarden":{"eq":"Team Penske","of":511,"ofp":2,"s":{"indy":474,"f1":164,"i500":492,"final":514,"ambas":532,"hib":249,"hib2":389,"i30":229},"v":2,"pd":6,"t10":13,"i5":12,"fi":2},"P. O'Ward":{"eq":"Arrow McLaren","of":487,"ofp":3,"s":{"indy":444,"f1":148,"i500":476,"final":449,"ambas":481,"hib":235,"hib2":357,"i30":209},"v":2,"pd":5,"t10":11,"i5":4,"fi":27},"S. Dixon":{"eq":"Chip Ganassi Racing","of":481,"ofp":4,"s":{"indy":447,"f1":146,"i500":460,"final":482,"ambas":495,"hib":215,"hib2":378,"i30":198},"v":1,"pd":5,"t10":12,"i5":17,"fi":3},"C. Herta":{"eq":"Andretti Autosport","of":455,"ofp":5,"s":{"indy":414,"f1":134,"i500":428,"final":464,"ambas":478,"hib":188,"hib2":360,"i30":183},"v":3,"pd":5,"t10":8,"i5":16,"fi":1},"M. Ericsson":{"eq":"Chip Ganassi Racing","of":435,"ofp":6,"s":{"indy":411,"f1":107,"i500":430,"final":416,"ambas":435,"hib":175,"hib2":343,"i30":180},"v":2,"pd":3,"t10":12,"i5":11,"fi":28},"G. Rahal":{"eq":"Rahal Letterman Lanigan Racing","of":389,"ofp":7,"s":{"indy":377,"f1":98,"i500":382,"final":391,"ambas":396,"hib":150,"hib2":325,"i30":147},"v":0,"pd":1,"t10":11,"i5":32,"fi":16},"S. Pagenaud":{"eq":"Team Penske","of":383,"ofp":8,"s":{"indy":344,"f1":69,"i500":379,"final":374,"ambas":409,"hib":148,"hib2":265,"i30":131},"v":0,"pd":2,"t10":9,"i5":3,"fi":5},"W. Power":{"eq":"Team Penske","of":357,"ofp":9,"s":{"indy":342,"f1":86,"i500":347,"final":362,"ambas":367,"hib":144,"hib2":284,"i30":139},"v":1,"pd":4,"t10":7,"i5":30,"fi":10},"A. Rossi":{"eq":"Andretti Autosport","of":332,"ofp":10,"s":{"indy":326,"f1":72,"i500":331,"final":354,"ambas":359,"hib":120,"hib2":278,"i30":118},"v":0,"pd":1,"t10":9,"i5":29,"fi":6},"T. Sato":{"eq":"Rahal Letterman Lanigan Racing","of":324,"ofp":11,"s":{"indy":305,"f1":38,"i500":321,"final":327,"ambas":343,"hib":110,"hib2":233,"i30":100},"v":0,"pd":0,"t10":8,"i5":14,"fi":9},"R. van Kalmthout":{"eq":"Ed Carpenter Racing","of":308,"ofp":12,"s":{"indy":273,"f1":59,"i500":297,"final":278,"ambas":302,"hib":118,"hib2":214,"i30":101},"v":1,"pd":2,"t10":6,"i5":8,"fi":25},"J. Harvey":{"eq":"Meyer Shank Racing","of":308,"ofp":13,"s":{"indy":294,"f1":45,"i500":306,"final":320,"ambas":332,"hib":109,"hib2":230,"i30":85},"v":0,"pd":0,"t10":6,"i5":18,"fi":7},"S. McLaughlin":{"eq":"Team Penske","of":305,"ofp":14,"s":{"indy":294,"f1":40,"i500":304,"final":313,"ambas":323,"hib":112,"hib2":222,"i30":96},"v":0,"pd":1,"t10":5,"i5":20,"fi":11},"R. Grosjean":{"eq":"Dale Coyne Racing","of":272,"ofp":15,"s":{"indy":265,"f1":68,"i500":265,"final":271,"ambas":271,"hib":84,"hib2":249,"i30":104},"v":0,"pd":3,"t10":6,"i5":null,"fi":24},"S. Bourdais":{"eq":"A.J. Foyt Enterprises","of":258,"ofp":16,"s":{"indy":251,"f1":25,"i500":256,"final":275,"ambas":280,"hib":67,"hib2":209,"i30":67},"v":0,"pd":0,"t10":4,"i5":26,"fi":8},"R. Hunter-Reay":{"eq":"Andretti Autosport","of":256,"ofp":17,"s":{"indy":244,"f1":19,"i500":252,"final":251,"ambas":259,"hib":80,"hib2":183,"i30":65},"v":0,"pd":0,"t10":3,"i5":22,"fi":23},"C. Daly":{"eq":"Ed Carpenter Racing","of":235,"ofp":18,"s":{"indy":215,"f1":0,"i500":232,"final":224,"ambas":241,"hib":51,"hib2":164,"i30":40},"v":0,"pd":0,"t10":0,"i5":13,"fi":21},"E. Jones":{"eq":"Dale Coyne Racing","of":233,"ofp":19,"s":{"indy":226,"f1":11,"i500":231,"final":244,"ambas":249,"hib":48,"hib2":189,"i30":57},"v":0,"pd":0,"t10":3,"i5":28,"fi":12},"J. Hinchcliffe":{"eq":"Andretti Autosport","of":220,"ofp":20,"s":{"indy":211,"f1":15,"i500":220,"final":227,"ambas":236,"hib":58,"hib2":168,"i30":39},"v":0,"pd":1,"t10":1,"i5":21,"fi":14},"F. Rosenqvist":{"eq":"Arrow McLaren","of":205,"ofp":21,"s":{"indy":199,"f1":12,"i500":204,"final":216,"ambas":221,"hib":62,"hib2":149,"i30":45},"v":0,"pd":0,"t10":2,"i5":27,"fi":13},"H. Castroneves":{"eq":"Meyer Shank Racing","of":158,"ofp":22,"s":{"indy":104,"f1":27,"i500":154,"final":114,"ambas":164,"hib":52,"hib2":79,"i30":57},"v":1,"pd":1,"t10":2,"i5":1,"fi":20},"D. Kellett":{"eq":"A.J. Foyt Enterprises","of":148,"ofp":23,"s":{"indy":141,"f1":0,"i500":148,"final":152,"ambas":159,"hib":44,"hib2":97,"i30":20},"v":0,"pd":0,"t10":0,"i5":23,"fi":19},"S. Ferrucci":{"eq":"Rahal Letterman Lanigan Racing","of":146,"ofp":24,"s":{"indy":117,"f1":19,"i500":145,"final":117,"ambas":145,"hib":39,"hib2":97,"i30":48},"v":0,"pd":0,"t10":4,"i5":6,"fi":null},"M. Chilton":{"eq":"Carlin","of":134,"ofp":25,"s":{"indy":127,"f1":1,"i500":133,"final":142,"ambas":148,"hib":7,"hib2":121,"i30":19},"v":0,"pd":0,"t10":1,"i5":24,"fi":15},"J. Johnson":{"eq":"Chip Ganassi Racing","of":108,"ofp":26,"s":{"indy":108,"f1":0,"i500":108,"final":121,"ambas":121,"hib":0,"hib2":108,"i30":12},"v":0,"pd":0,"t10":0,"i5":null,"fi":17}},"etapas":[{"n":"Barber","t":"road","i5":false,"fin":false,"pend":false},{"n":"St. Petersburg","t":"street","i5":false,"fin":false,"pend":false},{"n":"Texas 1","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Texas 2","t":"oval","i5":false,"fin":false,"pend":false},{"n":"GP de Indianápolis","t":"road","i5":false,"fin":false,"pend":false},{"n":"Indy 500","t":"oval","i5":true,"fin":false,"pend":false},{"n":"Detroit (Belle Isle) 1","t":"street","i5":false,"fin":false,"pend":false},{"n":"Detroit (Belle Isle) 2","t":"street","i5":false,"fin":false,"pend":false},{"n":"Road America","t":"road","i5":false,"fin":false,"pend":false},{"n":"Mid-Ohio","t":"road","i5":false,"fin":false,"pend":false},{"n":"Nashville (rua)","t":"street","i5":false,"fin":false,"pend":false},{"n":"GP de Indianápolis","t":"road","i5":false,"fin":false,"pend":false},{"n":"Gateway","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Portland","t":"road","i5":false,"fin":false,"pend":false},{"n":"Laguna Seca","t":"road","i5":false,"fin":false,"pend":false},{"n":"Long Beach","t":"street","i5":false,"fin":true,"pend":false}],"n_etapas":16,"n_disp":16,"pendentes":[],"n_ovais":4,"i500_round":6,"final":"Long Beach","final_real":true,"i500_epoca":true},"2022":{"rank":{"indy":["W. Power","J. Newgarden","S. Dixon","S. McLaughlin","A. Palou","M. Ericsson","P. O'Ward","C. Herta","A. Rossi","F. Rosenqvist","G. Rahal","R. Grosjean","C. Lundgaard","R. van Kalmthout","S. Pagenaud","D. Malukas","T. Sato","C. Daly","H. Castroneves","C. Ilott","J. Johnson","J. Harvey","D. DeFrancesco","K. Kirkwood","D. Kellett"],"f1":["W. Power","J. Newgarden","S. McLaughlin","S. Dixon","A. Palou","P. O'Ward","M. Ericsson","A. Rossi","C. Herta","F. Rosenqvist","R. Grosjean","R. van Kalmthout","G. Rahal","C. Lundgaard","S. Pagenaud","D. Malukas","J. Johnson","C. Daly","T. Sato","H. Castroneves","C. Ilott","J. Harvey","K. Kirkwood","D. DeFrancesco","D. Kellett"],"i500":["W. Power","J. Newgarden","S. Dixon","M. Ericsson","S. McLaughlin","A. Palou","P. O'Ward","A. Rossi","F. Rosenqvist","C. Herta","G. Rahal","R. Grosjean","C. Lundgaard","S. Pagenaud","R. van Kalmthout","D. Malukas","C. Daly","H. Castroneves","T. Sato","C. Ilott","J. Johnson","J. Harvey","D. DeFrancesco","K. Kirkwood","D. Kellett"],"final":["W. Power","J. Newgarden","A. Palou","S. McLaughlin","S. Dixon","M. Ericsson","P. O'Ward","C. Herta","A. Rossi","F. Rosenqvist","R. Grosjean","C. Lundgaard","G. Rahal","R. van Kalmthout","D. Malukas","S. Pagenaud","T. Sato","H. Castroneves","C. Daly","J. Johnson","C. Ilott","J. Harvey","D. DeFrancesco","K. Kirkwood","D. Kellett"],"ambas":["W. Power","J. Newgarden","A. Palou","S. McLaughlin","S. Dixon","M. Ericsson","P. O'Ward","A. Rossi","F. Rosenqvist","C. Herta","G. Rahal","C. Lundgaard","R. Grosjean","R. van Kalmthout","S. Pagenaud","D. Malukas","H. Castroneves","C. Daly","T. Sato","J. Johnson","C. Ilott","D. DeFrancesco","J. Harvey","K. Kirkwood","D. Kellett"],"hib":["W. Power","J. Newgarden","S. McLaughlin","S. Dixon","A. Palou","P. O'Ward","M. Ericsson","C. Herta","A. Rossi","F. Rosenqvist","G. Rahal","R. Grosjean","R. van Kalmthout","D. Malukas","S. Pagenaud","C. Lundgaard","J. Johnson","C. Daly","T. Sato","H. Castroneves","C. Ilott","D. DeFrancesco","K. Kirkwood","D. Kellett","J. Harvey"],"hib2":["W. Power","S. McLaughlin","J. Newgarden","S. Dixon","A. Palou","M. Ericsson","P. O'Ward","A. Rossi","C. Herta","F. Rosenqvist","C. Lundgaard","R. Grosjean","R. van Kalmthout","G. Rahal","S. Pagenaud","D. Malukas","T. Sato","C. Daly","H. Castroneves","J. Harvey","C. Ilott","D. DeFrancesco","J. Johnson","K. Kirkwood","D. Kellett"],"i30":["W. Power","J. Newgarden","S. McLaughlin","S. Dixon","A. Palou","P. O'Ward","M. Ericsson","A. Rossi","C. Herta","F. Rosenqvist","G. Rahal","R. Grosjean","R. van Kalmthout","C. Lundgaard","S. Pagenaud","D. Malukas","T. Sato","C. Daly","H. Castroneves","C. Ilott","J. Johnson","J. Harvey","K. Kirkwood","D. DeFrancesco","D. Kellett"],"oficial":["W. Power","J. Newgarden","S. Dixon","S. McLaughlin","A. Palou","M. Ericsson","P. O'Ward","F. Rosenqvist","A. Rossi","C. Herta","G. Rahal","R. van Kalmthout","R. Grosjean","C. Lundgaard","S. Pagenaud","D. Malukas","C. Daly","H. Castroneves","T. Sato","C. Ilott","J. Johnson","J. Harvey","D. DeFrancesco","K. Kirkwood","D. Kellett"]},"pilotos":{"W. Power":{"eq":"Team Penske","of":560,"ofp":1,"s":{"indy":524,"f1":195,"i500":539,"final":559,"ambas":574,"hib":292,"hib2":427,"i30":250},"v":1,"pd":9,"t10":13,"i5":15,"fi":3},"J. Newgarden":{"eq":"Team Penske","of":544,"ofp":2,"s":{"indy":508,"f1":184,"i500":525,"final":548,"ambas":565,"hib":282,"hib2":410,"i30":249},"v":5,"pd":6,"t10":12,"i5":13,"fi":2},"S. Dixon":{"eq":"Chip Ganassi Racing","of":521,"ofp":3,"s":{"indy":491,"f1":155,"i500":500,"final":509,"ambas":518,"hib":244,"hib2":402,"i30":222},"v":2,"pd":4,"t10":15,"i5":21,"fi":12},"S. McLaughlin":{"eq":"Team Penske","of":510,"ofp":4,"s":{"indy":486,"f1":177,"i500":491,"final":514,"ambas":519,"hib":252,"hib2":411,"i30":232},"v":3,"pd":7,"t10":12,"i5":29,"fi":6},"A. Palou":{"eq":"Chip Ganassi Racing","of":510,"ofp":5,"s":{"indy":466,"f1":144,"i500":488,"final":516,"ambas":538,"hib":241,"hib2":369,"i30":213},"v":1,"pd":6,"t10":13,"i5":9,"fi":1},"M. Ericsson":{"eq":"Chip Ganassi Racing","of":506,"ofp":6,"s":{"indy":443,"f1":116,"i500":493,"final":465,"ambas":515,"hib":221,"hib2":338,"i30":201},"v":1,"pd":3,"t10":12,"i5":1,"fi":9},"P. O'Ward":{"eq":"Arrow McLaren","of":480,"ofp":7,"s":{"indy":426,"f1":134,"i500":466,"final":450,"ambas":490,"hib":238,"hib2":322,"i30":202},"v":2,"pd":4,"t10":9,"i5":2,"fi":8},"F. Rosenqvist":{"eq":"Arrow McLaren","of":393,"ofp":8,"s":{"indy":348,"f1":71,"i500":380,"final":380,"ambas":412,"hib":139,"hib2":280,"i30":131},"v":0,"pd":1,"t10":10,"i5":4,"fi":4},"A. Rossi":{"eq":"Andretti Autosport","of":381,"ofp":9,"s":{"indy":365,"f1":93,"i500":395,"final":385,"ambas":415,"hib":152,"hib2":306,"i30":154},"v":1,"pd":3,"t10":9,"i5":5,"fi":10},"C. Herta":{"eq":"Andretti Autosport","of":381,"ofp":10,"s":{"indy":367,"f1":88,"i500":372,"final":386,"ambas":391,"hib":154,"hib2":301,"i30":148},"v":1,"pd":2,"t10":8,"i5":30,"fi":11},"G. Rahal":{"eq":"Rahal Letterman Lanigan Racing","of":345,"ofp":11,"s":{"indy":326,"f1":51,"i500":342,"final":338,"ambas":354,"hib":130,"hib2":247,"i30":108},"v":0,"pd":0,"t10":9,"i5":14,"fi":18},"R. van Kalmthout":{"eq":"Ed Carpenter Racing","of":331,"ofp":12,"s":{"indy":308,"f1":56,"i500":313,"final":324,"ambas":329,"hib":116,"hib2":248,"i30":100},"v":0,"pd":1,"t10":6,"i5":33,"fi":14},"R. Grosjean":{"eq":"Andretti Autosport","of":328,"ofp":13,"s":{"indy":317,"f1":60,"i500":322,"final":343,"ambas":348,"hib":127,"hib2":250,"i30":101},"v":0,"pd":1,"t10":7,"i5":31,"fi":7},"C. Lundgaard":{"eq":"Rahal Letterman Lanigan Racing","of":323,"ofp":14,"s":{"indy":309,"f1":40,"i500":321,"final":339,"ambas":351,"hib":98,"hib2":251,"i30":98},"v":0,"pd":1,"t10":7,"i5":18,"fi":5},"S. Pagenaud":{"eq":"Meyer Shank Racing","of":314,"ofp":15,"s":{"indy":290,"f1":37,"i500":314,"final":303,"ambas":327,"hib":101,"hib2":226,"i30":97},"v":0,"pd":1,"t10":7,"i5":8,"fi":17},"D. Malukas":{"eq":"Dale Coyne Racing","of":305,"ofp":16,"s":{"indy":288,"f1":24,"i500":302,"final":305,"ambas":319,"hib":115,"hib2":197,"i30":81},"v":0,"pd":1,"t10":3,"i5":16,"fi":13},"C. Daly":{"eq":"Ed Carpenter Racing","of":267,"ofp":17,"s":{"indy":238,"f1":18,"i500":266,"final":244,"ambas":272,"hib":82,"hib2":174,"i30":57},"v":0,"pd":0,"t10":2,"i5":6,"fi":24},"H. Castroneves":{"eq":"Meyer Shank Racing","of":263,"ofp":18,"s":{"indy":236,"f1":12,"i500":262,"final":247,"ambas":273,"hib":77,"hib2":171,"i30":54},"v":0,"pd":0,"t10":3,"i5":7,"fi":19},"T. Sato":{"eq":"Dale Coyne Racing","of":258,"ofp":19,"s":{"indy":246,"f1":18,"i500":251,"final":253,"ambas":258,"hib":81,"hib2":183,"i30":60},"v":0,"pd":0,"t10":4,"i5":25,"fi":23},"C. Ilott":{"eq":"Juncos Hollinger Racing","of":219,"ofp":20,"s":{"indy":211,"f1":6,"i500":216,"final":216,"ambas":221,"hib":71,"hib2":146,"i30":50},"v":0,"pd":0,"t10":2,"i5":32,"fi":26},"J. Johnson":{"eq":"Chip Ganassi Racing","of":214,"ofp":21,"s":{"indy":206,"f1":18,"i500":211,"final":220,"ambas":225,"hib":98,"hib2":126,"i30":46},"v":0,"pd":0,"t10":2,"i5":28,"fi":16},"J. Harvey":{"eq":"Rahal Letterman Lanigan Racing","of":209,"ofp":22,"s":{"indy":203,"f1":1,"i500":209,"final":213,"ambas":219,"hib":35,"hib2":169,"i30":34},"v":0,"pd":0,"t10":1,"i5":24,"fi":20},"D. DeFrancesco":{"eq":"Andretti Autosport","of":206,"ofp":23,"s":{"indy":195,"f1":0,"i500":205,"final":210,"ambas":220,"hib":62,"hib2":133,"i30":23},"v":0,"pd":0,"t10":0,"i5":20,"fi":15},"K. Kirkwood":{"eq":"A.J. Foyt Enterprises","of":183,"ofp":24,"s":{"indy":169,"f1":1,"i500":182,"final":178,"ambas":191,"hib":52,"hib2":118,"i30":27},"v":0,"pd":0,"t10":1,"i5":17,"fi":21},"D. Kellett":{"eq":"A.J. Foyt Enterprises","of":133,"ofp":25,"s":{"indy":128,"f1":0,"i500":133,"final":133,"ambas":138,"hib":48,"hib2":80,"i30":17},"v":0,"pd":0,"t10":0,"i5":27,"fi":25}},"etapas":[{"n":"St. Petersburg","t":"street","i5":false,"fin":false,"pend":false},{"n":"Texas","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Long Beach","t":"street","i5":false,"fin":false,"pend":false},{"n":"Barber","t":"road","i5":false,"fin":false,"pend":false},{"n":"GP de Indianápolis","t":"road","i5":false,"fin":false,"pend":false},{"n":"Indy 500","t":"oval","i5":true,"fin":false,"pend":false},{"n":"Detroit (Belle Isle)","t":"street","i5":false,"fin":false,"pend":false},{"n":"Road America","t":"road","i5":false,"fin":false,"pend":false},{"n":"Mid-Ohio","t":"road","i5":false,"fin":false,"pend":false},{"n":"Toronto","t":"street","i5":false,"fin":false,"pend":false},{"n":"Iowa 1","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Iowa 2","t":"oval","i5":false,"fin":false,"pend":false},{"n":"GP de Indianápolis","t":"road","i5":false,"fin":false,"pend":false},{"n":"Nashville (rua)","t":"street","i5":false,"fin":false,"pend":false},{"n":"Gateway","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Portland","t":"road","i5":false,"fin":false,"pend":false},{"n":"Laguna Seca","t":"road","i5":false,"fin":true,"pend":false}],"n_etapas":17,"n_disp":17,"pendentes":[],"n_ovais":5,"i500_round":6,"final":"Laguna Seca","final_real":true,"i500_epoca":true},"2023":{"rank":{"indy":["A. Palou","S. Dixon","S. McLaughlin","P. O'Ward","J. Newgarden","M. Ericsson","W. Power","C. Lundgaard","A. Rossi","C. Herta","K. Kirkwood","F. Rosenqvist","R. Grosjean","G. Rahal","C. Ilott","R. van Kalmthout","D. Malukas","H. Castroneves","M. Armstrong","S. Ferrucci","A. Canapino","D. DeFrancesco","R. Robb","J. Harvey","C. Daly","R. Hunter-Reay","B. Pedersen","S. Pagenaud"],"f1":["A. Palou","S. Dixon","J. Newgarden","P. O'Ward","S. McLaughlin","W. Power","M. Ericsson","C. Lundgaard","A. Rossi","K. Kirkwood","F. Rosenqvist","C. Herta","R. Grosjean","D. Malukas","G. Rahal","C. Ilott","M. Armstrong","S. Ferrucci","R. van Kalmthout","C. Daly","H. Castroneves","R. Hunter-Reay","A. Canapino","D. DeFrancesco","R. Robb","S. Pagenaud","J. Harvey","B. Pedersen"],"i500":["A. Palou","S. Dixon","J. Newgarden","S. McLaughlin","P. O'Ward","M. Ericsson","W. Power","A. Rossi","C. Lundgaard","C. Herta","K. Kirkwood","F. Rosenqvist","R. Grosjean","R. van Kalmthout","C. Ilott","G. Rahal","D. Malukas","S. Ferrucci","H. Castroneves","M. Armstrong","D. DeFrancesco","A. Canapino","C. Daly","J. Harvey","R. Robb","R. Hunter-Reay","B. Pedersen","S. Pagenaud"],"final":["A. Palou","S. Dixon","S. McLaughlin","P. O'Ward","J. Newgarden","W. Power","M. Ericsson","C. Lundgaard","A. Rossi","C. Herta","K. Kirkwood","F. Rosenqvist","R. Grosjean","C. Ilott","R. van Kalmthout","G. Rahal","D. Malukas","M. Armstrong","H. Castroneves","S. Ferrucci","A. Canapino","D. DeFrancesco","R. Robb","R. Hunter-Reay","J. Harvey","B. Pedersen","C. Daly","S. Pagenaud"],"ambas":["A. Palou","S. Dixon","S. McLaughlin","J. Newgarden","P. O'Ward","M. Ericsson","W. Power","C. Lundgaard","A. Rossi","C. Herta","K. Kirkwood","F. Rosenqvist","C. Ilott","R. Grosjean","R. van Kalmthout","G. Rahal","D. Malukas","S. Ferrucci","H. Castroneves","M. Armstrong","D. DeFrancesco","A. Canapino","R. Hunter-Reay","R. Robb","C. Daly","J. Harvey","B. Pedersen","S. Pagenaud"],"hib":["A. Palou","S. Dixon","J. Newgarden","P. O'Ward","S. McLaughlin","M. Ericsson","W. Power","A. Rossi","C. Herta","C. Lundgaard","F. Rosenqvist","K. Kirkwood","D. Malukas","R. Grosjean","C. Ilott","R. van Kalmthout","G. Rahal","S. Ferrucci","H. Castroneves","C. Daly","D. DeFrancesco","A. Canapino","R. Hunter-Reay","J. Harvey","B. Pedersen","R. Robb","M. Armstrong","S. Pagenaud"],"hib2":["A. Palou","S. Dixon","S. McLaughlin","P. O'Ward","J. Newgarden","W. Power","M. Ericsson","C. Lundgaard","A. Rossi","K. Kirkwood","C. Herta","F. Rosenqvist","G. Rahal","M. Armstrong","R. Grosjean","C. Ilott","R. van Kalmthout","D. Malukas","S. Ferrucci","H. Castroneves","A. Canapino","D. DeFrancesco","R. Robb","J. Harvey","B. Pedersen","R. Hunter-Reay","S. Pagenaud","C. Daly"],"i30":["A. Palou","S. Dixon","J. Newgarden","P. O'Ward","S. McLaughlin","M. Ericsson","W. Power","C. Lundgaard","A. Rossi","K. Kirkwood","C. Herta","F. Rosenqvist","R. Grosjean","G. Rahal","D. Malukas","M. Armstrong","C. Ilott","R. van Kalmthout","S. Ferrucci","H. Castroneves","A. Canapino","D. DeFrancesco","R. Hunter-Reay","C. Daly","R. Robb","J. Harvey","B. Pedersen","S. Pagenaud"],"oficial":["A. Palou","S. Dixon","S. McLaughlin","P. O'Ward","J. Newgarden","M. Ericsson","W. Power","C. Lundgaard","A. Rossi","C. Herta","K. Kirkwood","F. Rosenqvist","R. Grosjean","R. van Kalmthout","G. Rahal","C. Ilott","D. Malukas","H. Castroneves","S. Ferrucci","M. Armstrong","A. Canapino","D. DeFrancesco","R. Robb","J. Harvey","C. Daly","R. Hunter-Reay","B. Pedersen","S. Pagenaud"]},"pilotos":{"A. Palou":{"eq":"Chip Ganassi Racing","of":656,"ofp":1,"s":{"indy":622,"f1":255,"i500":654,"final":657,"ambas":689,"hib":355,"hib2":522,"i30":330},"v":5,"pd":10,"t10":17,"i5":4,"fi":3},"S. Dixon":{"eq":"Chip Ganassi Racing","of":578,"ofp":2,"s":{"indy":559,"f1":217,"i500":587,"final":609,"ambas":637,"hib":322,"hib2":454,"i30":279},"v":3,"pd":6,"t10":16,"i5":6,"fi":1},"S. McLaughlin":{"eq":"Team Penske","of":488,"ofp":3,"s":{"indy":479,"f1":142,"i500":495,"final":519,"ambas":535,"hib":240,"hib2":381,"i30":209},"v":1,"pd":4,"t10":14,"i5":14,"fi":2},"P. O'Ward":{"eq":"Arrow McLaren","of":484,"ofp":4,"s":{"indy":467,"f1":156,"i500":473,"final":489,"ambas":495,"hib":245,"hib2":378,"i30":217},"v":0,"pd":7,"t10":14,"i5":24,"fi":9},"J. Newgarden":{"eq":"Team Penske","of":479,"ofp":5,"s":{"indy":465,"f1":159,"i500":515,"final":474,"ambas":524,"hib":264,"hib2":360,"i30":234},"v":4,"pd":5,"t10":11,"i5":1,"fi":21},"M. Ericsson":{"eq":"Chip Ganassi Racing","of":438,"ofp":6,"s":{"indy":428,"f1":105,"i500":468,"final":443,"ambas":483,"hib":206,"hib2":327,"i30":191},"v":1,"pd":3,"t10":14,"i5":2,"fi":15},"W. Power":{"eq":"Team Penske","of":425,"ofp":7,"s":{"indy":413,"f1":113,"i500":420,"final":445,"ambas":452,"hib":196,"hib2":330,"i30":170},"v":0,"pd":4,"t10":11,"i5":23,"fi":4},"C. Lundgaard":{"eq":"Rahal Letterman Lanigan Racing","of":390,"ofp":8,"s":{"indy":383,"f1":87,"i500":394,"final":411,"ambas":422,"hib":149,"hib2":321,"i30":141},"v":1,"pd":1,"t10":9,"i5":19,"fi":6},"A. Rossi":{"eq":"Arrow McLaren","of":375,"ofp":9,"s":{"indy":365,"f1":82,"i500":395,"final":391,"ambas":421,"hib":164,"hib2":283,"i30":140},"v":0,"pd":1,"t10":11,"i5":5,"fi":7},"C. Herta":{"eq":"Andretti Autosport","of":356,"ofp":10,"s":{"indy":346,"f1":61,"i500":368,"final":353,"ambas":375,"hib":152,"hib2":255,"i30":124},"v":0,"pd":1,"t10":8,"i5":9,"fi":23},"K. Kirkwood":{"eq":"Andretti Autosport","of":352,"ofp":11,"s":{"indy":344,"f1":69,"i500":349,"final":349,"ambas":354,"hib":133,"hib2":280,"i30":128},"v":2,"pd":2,"t10":7,"i5":28,"fi":25},"F. Rosenqvist":{"eq":"Arrow McLaren","of":324,"ofp":12,"s":{"indy":306,"f1":68,"i500":311,"final":317,"ambas":322,"hib":135,"hib2":239,"i30":114},"v":0,"pd":2,"t10":8,"i5":27,"fi":19},"R. Grosjean":{"eq":"Andretti Autosport","of":296,"ofp":13,"s":{"indy":287,"f1":44,"i500":292,"final":306,"ambas":311,"hib":120,"hib2":211,"i30":97},"v":0,"pd":2,"t10":3,"i5":30,"fi":11},"R. van Kalmthout":{"eq":"Ed Carpenter Racing","of":277,"ofp":14,"s":{"indy":265,"f1":9,"i500":285,"final":277,"ambas":297,"hib":91,"hib2":183,"i30":64},"v":0,"pd":0,"t10":2,"i5":10,"fi":18},"G. Rahal":{"eq":"Rahal Letterman Lanigan Racing","of":276,"ofp":15,"s":{"indy":268,"f1":35,"i500":276,"final":273,"ambas":281,"hib":74,"hib2":229,"i30":84},"v":0,"pd":1,"t10":5,"i5":22,"fi":27},"C. Ilott":{"eq":"Juncos Hollinger Racing","of":266,"ofp":16,"s":{"indy":265,"f1":22,"i500":283,"final":295,"ambas":313,"hib":96,"hib2":191,"i30":65},"v":0,"pd":0,"t10":3,"i5":12,"fi":5},"D. Malukas":{"eq":"Dale Coyne Racing","of":265,"ofp":17,"s":{"indy":263,"f1":44,"i500":268,"final":273,"ambas":278,"hib":127,"hib2":180,"i30":84},"v":0,"pd":1,"t10":6,"i5":29,"fi":20},"H. Castroneves":{"eq":"Meyer Shank Racing","of":217,"ofp":18,"s":{"indy":216,"f1":1,"i500":231,"final":233,"ambas":248,"hib":72,"hib2":145,"i30":39},"v":0,"pd":0,"t10":1,"i5":15,"fi":13},"S. Ferrucci":{"eq":"A.J. Foyt Enterprises","of":214,"ofp":19,"s":{"indy":204,"f1":15,"i500":239,"final":217,"ambas":252,"hib":74,"hib2":145,"i30":51},"v":0,"pd":1,"t10":1,"i5":3,"fi":17},"M. Armstrong":{"eq":"Chip Ganassi Racing","of":214,"ofp":20,"s":{"indy":213,"f1":20,"i500":213,"final":237,"ambas":237,"hib":20,"hib2":213,"i30":66},"v":0,"pd":0,"t10":5,"i5":null,"fi":8},"A. Canapino":{"eq":"Juncos Hollinger Racing","of":180,"ofp":21,"s":{"indy":179,"f1":0,"i500":184,"final":195,"ambas":200,"hib":50,"hib2":129,"i30":33},"v":0,"pd":0,"t10":0,"i5":26,"fi":14},"D. DeFrancesco":{"eq":"Andretti Autosport","of":177,"ofp":22,"s":{"indy":176,"f1":0,"i500":193,"final":184,"ambas":201,"hib":52,"hib2":124,"i30":28},"v":0,"pd":0,"t10":0,"i5":13,"fi":22},"R. Robb":{"eq":"Sting Dale Coyne Racing","of":147,"ofp":23,"s":{"indy":146,"f1":0,"i500":151,"final":164,"ambas":169,"hib":29,"hib2":117,"i30":21},"v":0,"pd":0,"t10":0,"i5":31,"fi":12},"J. Harvey":{"eq":"Rahal Letterman Lanigan Racing","of":146,"ofp":24,"s":{"indy":146,"f1":0,"i500":158,"final":146,"ambas":158,"hib":47,"hib2":99,"i30":19},"v":0,"pd":0,"t10":0,"i5":18,"fi":null},"C. Daly":{"eq":"Rahal Letterman Lanigan Racing","of":134,"ofp":25,"s":{"indy":134,"f1":4,"i500":158,"final":134,"ambas":158,"hib":70,"hib2":68,"i30":26},"v":0,"pd":0,"t10":1,"i5":8,"fi":null},"R. Hunter-Reay":{"eq":"Ed Carpenter Racing","of":131,"ofp":26,"s":{"indy":130,"f1":1,"i500":149,"final":150,"ambas":169,"hib":49,"hib2":82,"i30":27},"v":0,"pd":0,"t10":1,"i5":11,"fi":10},"B. Pedersen":{"eq":"A.J. Foyt Enterprises","of":129,"ofp":27,"s":{"indy":127,"f1":0,"i500":136,"final":141,"ambas":150,"hib":39,"hib2":88,"i30":18},"v":0,"pd":0,"t10":0,"i5":21,"fi":16},"S. Pagenaud":{"eq":"Meyer Shank Racing","of":88,"ofp":28,"s":{"indy":88,"f1":0,"i500":93,"final":88,"ambas":93,"hib":18,"hib2":70,"i30":14},"v":0,"pd":0,"t10":0,"i5":25,"fi":null}},"etapas":[{"n":"St. Petersburg","t":"street","i5":false,"fin":false,"pend":false},{"n":"Texas","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Long Beach","t":"street","i5":false,"fin":false,"pend":false},{"n":"Barber","t":"road","i5":false,"fin":false,"pend":false},{"n":"GP de Indianápolis","t":"road","i5":false,"fin":false,"pend":false},{"n":"Indy 500","t":"oval","i5":true,"fin":false,"pend":false},{"n":"Detroit","t":"street","i5":false,"fin":false,"pend":false},{"n":"Road America","t":"road","i5":false,"fin":false,"pend":false},{"n":"Mid-Ohio","t":"road","i5":false,"fin":false,"pend":false},{"n":"Toronto","t":"street","i5":false,"fin":false,"pend":false},{"n":"Iowa 1","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Iowa 2","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Nashville (rua)","t":"street","i5":false,"fin":false,"pend":false},{"n":"GP de Indianápolis","t":"road","i5":false,"fin":false,"pend":false},{"n":"Gateway","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Portland","t":"road","i5":false,"fin":false,"pend":false},{"n":"Laguna Seca","t":"road","i5":false,"fin":true,"pend":false}],"n_etapas":17,"n_disp":17,"pendentes":[],"n_ovais":5,"i500_round":6,"final":"Laguna Seca","final_real":true,"i500_epoca":false},"2024":{"rank":{"indy":["A. Palou","C. Herta","W. Power","S. McLaughlin","P. O'Ward","S. Dixon","K. Kirkwood","J. Newgarden","S. Ferrucci","A. Rossi","C. Lundgaard","F. Rosenqvist","M. Armstrong","M. Ericsson","R. van Kalmthout","L. Lundqvist","R. Grosjean","G. Rahal","P. Fittipaldi","R. Robb","K. Simpson","C. Rasmussen","N. Siegel","D. Malukas","J. Harvey","C. Daly","A. Canapino","T. Pourchaire"],"f1":["A. Palou","C. Herta","S. McLaughlin","W. Power","P. O'Ward","S. Dixon","J. Newgarden","K. Kirkwood","A. Rossi","M. Ericsson","S. Ferrucci","M. Armstrong","L. Lundqvist","C. Lundgaard","F. Rosenqvist","R. van Kalmthout","R. Grosjean","C. Daly","D. Malukas","G. Rahal","N. Siegel","C. Rasmussen","R. Robb","T. Pourchaire","K. Simpson","A. Canapino","P. Fittipaldi","J. Harvey"],"i500":["A. Palou","C. Herta","S. McLaughlin","W. Power","P. O'Ward","S. Dixon","J. Newgarden","K. Kirkwood","A. Rossi","S. Ferrucci","C. Lundgaard","R. van Kalmthout","F. Rosenqvist","M. Armstrong","M. Ericsson","L. Lundqvist","R. Grosjean","G. Rahal","R. Robb","K. Simpson","P. Fittipaldi","C. Rasmussen","N. Siegel","D. Malukas","J. Harvey","C. Daly","A. Canapino","T. Pourchaire"],"final":["C. Herta","A. Palou","S. McLaughlin","W. Power","P. O'Ward","S. Dixon","K. Kirkwood","J. Newgarden","S. Ferrucci","A. Rossi","M. Armstrong","C. Lundgaard","R. van Kalmthout","F. Rosenqvist","M. Ericsson","L. Lundqvist","R. Grosjean","G. Rahal","P. Fittipaldi","R. Robb","K. Simpson","C. Rasmussen","D. Malukas","N. Siegel","J. Harvey","C. Daly","A. Canapino","T. Pourchaire"],"ambas":["A. Palou","C. Herta","S. McLaughlin","P. O'Ward","W. Power","S. Dixon","J. Newgarden","K. Kirkwood","S. Ferrucci","A. Rossi","C. Lundgaard","R. van Kalmthout","M. Armstrong","F. Rosenqvist","M. Ericsson","L. Lundqvist","R. Grosjean","G. Rahal","R. Robb","P. Fittipaldi","K. Simpson","C. Rasmussen","D. Malukas","N. Siegel","J. Harvey","C. Daly","A. Canapino","T. Pourchaire"],"hib":["S. McLaughlin","A. Palou","C. Herta","S. Dixon","P. O'Ward","W. Power","J. Newgarden","K. Kirkwood","S. Ferrucci","A. Rossi","R. van Kalmthout","M. Armstrong","L. Lundqvist","C. Lundgaard","M. Ericsson","F. Rosenqvist","R. Grosjean","C. Daly","N. Siegel","G. Rahal","R. Robb","D. Malukas","K. Simpson","P. Fittipaldi","C. Rasmussen","J. Harvey","A. Canapino","T. Pourchaire"],"hib2":["A. Palou","W. Power","C. Herta","P. O'Ward","S. McLaughlin","S. Dixon","K. Kirkwood","J. Newgarden","A. Rossi","M. Ericsson","S. Ferrucci","F. Rosenqvist","M. Armstrong","C. Lundgaard","L. Lundqvist","R. Grosjean","G. Rahal","R. van Kalmthout","P. Fittipaldi","K. Simpson","C. Rasmussen","R. Robb","T. Pourchaire","A. Canapino","J. Harvey","D. Malukas","N. Siegel","C. Daly"],"i30":["A. Palou","C. Herta","W. Power","S. McLaughlin","P. O'Ward","S. Dixon","J. Newgarden","K. Kirkwood","A. Rossi","S. Ferrucci","M. Ericsson","M. Armstrong","F. Rosenqvist","C. Lundgaard","R. van Kalmthout","L. Lundqvist","R. Grosjean","G. Rahal","C. Daly","C. Rasmussen","D. Malukas","N. Siegel","K. Simpson","P. Fittipaldi","R. Robb","T. Pourchaire","J. Harvey","A. Canapino"],"oficial":["A. Palou","C. Herta","S. McLaughlin","W. Power","P. O'Ward","S. Dixon","K. Kirkwood","J. Newgarden","S. Ferrucci","A. Rossi","C. Lundgaard","F. Rosenqvist","R. van Kalmthout","M. Armstrong","M. Ericsson","L. Lundqvist","R. Grosjean","G. Rahal","P. Fittipaldi","R. Robb","K. Simpson","C. Rasmussen","N. Siegel","D. Malukas","J. Harvey","C. Daly","A. Canapino","T. Pourchaire"]},"pilotos":{"A. Palou":{"eq":"Chip Ganassi Racing","of":544,"ofp":1,"s":{"indy":524,"f1":197,"i500":554,"final":543,"ambas":573,"hib":316,"hib2":405,"i30":258},"v":2,"pd":6,"t10":13,"i5":5,"fi":11},"C. Herta":{"eq":"Andretti Global with Curb-Agajanian","of":513,"ofp":2,"s":{"indy":497,"f1":178,"i500":504,"final":547,"ambas":554,"hib":297,"hib2":378,"i30":235},"v":2,"pd":6,"t10":13,"i5":23,"fi":1},"S. McLaughlin":{"eq":"Team Penske","of":505,"ofp":3,"s":{"indy":474,"f1":174,"i500":502,"final":504,"ambas":532,"hib":326,"hib2":322,"i30":230},"v":3,"pd":7,"t10":12,"i5":6,"fi":5},"W. Power":{"eq":"Team Penske","of":498,"ofp":4,"s":{"indy":485,"f1":170,"i500":491,"final":491,"ambas":497,"hib":272,"hib2":383,"i30":232},"v":3,"pd":7,"t10":11,"i5":24,"fi":24},"P. O'Ward":{"eq":"Arrow McLaren","of":460,"ofp":5,"s":{"indy":449,"f1":151,"i500":489,"final":489,"ambas":529,"hib":273,"hib2":327,"i30":217},"v":3,"pd":6,"t10":10,"i5":2,"fi":2},"S. Dixon":{"eq":"Chip Ganassi Racing","of":456,"ofp":6,"s":{"indy":446,"f1":149,"i500":481,"final":459,"ambas":494,"hib":282,"hib2":313,"i30":212},"v":2,"pd":5,"t10":11,"i5":3,"fi":17},"K. Kirkwood":{"eq":"Andretti Global","of":420,"ofp":7,"s":{"indy":409,"f1":91,"i500":435,"final":441,"ambas":467,"hib":211,"hib2":289,"i30":165},"v":0,"pd":1,"t10":13,"i5":7,"fi":4},"J. Newgarden":{"eq":"Team Penske","of":401,"ofp":8,"s":{"indy":385,"f1":131,"i500":435,"final":420,"ambas":470,"hib":251,"hib2":265,"i30":190},"v":2,"pd":6,"t10":8,"i5":1,"fi":3},"S. Ferrucci":{"eq":"A.J. Foyt Enterprises","of":367,"ofp":9,"s":{"indy":356,"f1":61,"i500":380,"final":384,"ambas":408,"hib":198,"hib2":219,"i30":131},"v":0,"pd":0,"t10":11,"i5":8,"fi":6},"A. Rossi":{"eq":"Arrow McLaren","of":366,"ofp":10,"s":{"indy":351,"f1":76,"i500":383,"final":366,"ambas":398,"hib":197,"hib2":230,"i30":133},"v":0,"pd":1,"t10":10,"i5":4,"fi":15},"C. Lundgaard":{"eq":"Rahal Letterman Lanigan Racing","of":312,"ofp":11,"s":{"indy":308,"f1":37,"i500":325,"final":319,"ambas":336,"hib":139,"hib2":206,"i30":93},"v":0,"pd":1,"t10":5,"i5":13,"fi":19},"F. Rosenqvist":{"eq":"Meyer Shank Racing","of":306,"ofp":12,"s":{"indy":298,"f1":37,"i500":303,"final":303,"ambas":308,"hib":125,"hib2":210,"i30":96},"v":0,"pd":0,"t10":6,"i5":27,"fi":27},"R. van Kalmthout":{"eq":"Ed Carpenter Racing","of":300,"ofp":13,"s":{"indy":293,"f1":29,"i500":315,"final":311,"ambas":333,"hib":162,"hib2":160,"i30":93},"v":0,"pd":0,"t10":7,"i5":9,"fi":12},"M. Armstrong":{"eq":"Chip Ganassi Racing","of":298,"ofp":14,"s":{"indy":296,"f1":58,"i500":301,"final":322,"ambas":327,"hib":147,"hib2":207,"i30":104},"v":0,"pd":1,"t10":8,"i5":30,"fi":7},"M. Ericsson":{"eq":"Andretti Global","of":297,"ofp":15,"s":{"indy":295,"f1":61,"i500":300,"final":300,"ambas":305,"hib":129,"hib2":227,"i30":104},"v":0,"pd":1,"t10":8,"i5":33,"fi":25},"L. Lundqvist":{"eq":"Chip Ganassi Racing","of":279,"ofp":16,"s":{"indy":274,"f1":42,"i500":279,"final":298,"ambas":303,"hib":144,"hib2":172,"i30":84},"v":0,"pd":2,"t10":4,"i5":28,"fi":8},"R. Grosjean":{"eq":"Juncos Hollinger Racing","of":260,"ofp":17,"s":{"indy":260,"f1":27,"i500":271,"final":274,"ambas":285,"hib":117,"hib2":170,"i30":76},"v":0,"pd":0,"t10":6,"i5":19,"fi":16},"G. Rahal":{"eq":"Rahal Letterman Lanigan Racing","of":251,"ofp":18,"s":{"indy":249,"f1":10,"i500":264,"final":256,"ambas":271,"hib":90,"hib2":169,"i30":61},"v":0,"pd":0,"t10":5,"i5":15,"fi":23},"P. Fittipaldi":{"eq":"Rahal Letterman Lanigan Racing","of":186,"ofp":19,"s":{"indy":185,"f1":0,"i500":190,"final":194,"ambas":199,"hib":72,"hib2":113,"i30":29},"v":0,"pd":0,"t10":0,"i5":32,"fi":21},"R. Robb":{"eq":"Sting A.J. Foyt Enterprises","of":185,"ofp":20,"s":{"indy":183,"f1":2,"i500":197,"final":193,"ambas":207,"hib":89,"hib2":96,"i30":25},"v":0,"pd":0,"t10":1,"i5":16,"fi":20},"K. Simpson":{"eq":"Chip Ganassi Racing","of":182,"ofp":21,"s":{"indy":181,"f1":0,"i500":190,"final":189,"ambas":198,"hib":72,"hib2":109,"i30":29},"v":0,"pd":0,"t10":0,"i5":21,"fi":22},"C. Rasmussen":{"eq":"Ed Carpenter Racing","of":163,"ofp":22,"s":{"indy":163,"f1":2,"i500":181,"final":179,"ambas":197,"hib":69,"hib2":96,"i30":37},"v":0,"pd":0,"t10":1,"i5":12,"fi":14},"N. Siegel":{"eq":"Arrow McLaren","of":154,"ofp":23,"s":{"indy":153,"f1":6,"i500":153,"final":165,"ambas":165,"hib":90,"hib2":69,"i30":31},"v":0,"pd":0,"t10":1,"i5":null,"fi":18},"D. Malukas":{"eq":"Meyer Shank Racing","of":148,"ofp":24,"s":{"indy":146,"f1":10,"i500":146,"final":168,"ambas":168,"hib":84,"hib2":72,"i30":35},"v":0,"pd":0,"t10":2,"i5":null,"fi":9},"J. Harvey":{"eq":"Dale Coyne Racing","of":143,"ofp":25,"s":{"indy":143,"f1":0,"i500":143,"final":160,"ambas":160,"hib":62,"hib2":81,"i30":22},"v":0,"pd":0,"t10":0,"i5":null,"fi":13},"C. Daly":{"eq":"Juncos Hollinger Racing","of":119,"ofp":26,"s":{"indy":118,"f1":17,"i500":138,"final":138,"ambas":158,"hib":110,"hib2":25,"i30":42},"v":0,"pd":1,"t10":3,"i5":10,"fi":10},"A. Canapino":{"eq":"Juncos Hollinger Racing","of":109,"ofp":27,"s":{"indy":109,"f1":0,"i500":117,"final":109,"ambas":117,"hib":18,"hib2":91,"i30":16},"v":0,"pd":0,"t10":0,"i5":22,"fi":null},"T. Pourchaire":{"eq":"Arrow McLaren","of":91,"ofp":28,"s":{"indy":91,"f1":1,"i500":91,"final":91,"ambas":91,"hib":1,"hib2":91,"i30":22},"v":0,"pd":0,"t10":1,"i5":null,"fi":null}},"etapas":[{"n":"St. Petersburg","t":"street","i5":false,"fin":false,"pend":false},{"n":"Long Beach","t":"street","i5":false,"fin":false,"pend":false},{"n":"Barber","t":"road","i5":false,"fin":false,"pend":false},{"n":"GP de Indianápolis","t":"road","i5":false,"fin":false,"pend":false},{"n":"Indy 500","t":"oval","i5":true,"fin":false,"pend":false},{"n":"Detroit","t":"street","i5":false,"fin":false,"pend":false},{"n":"Road America","t":"road","i5":false,"fin":false,"pend":false},{"n":"Laguna Seca","t":"road","i5":false,"fin":false,"pend":false},{"n":"Mid-Ohio","t":"road","i5":false,"fin":false,"pend":false},{"n":"Iowa 1","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Iowa 2","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Toronto","t":"street","i5":false,"fin":false,"pend":false},{"n":"Gateway","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Portland","t":"road","i5":false,"fin":false,"pend":false},{"n":"Milwaukee 1","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Milwaukee 2","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Nashville Superspeedway","t":"oval","i5":false,"fin":true,"pend":false}],"n_etapas":17,"n_disp":17,"pendentes":[],"n_ovais":7,"i500_round":5,"final":"Nashville Superspeedway","final_real":true,"i500_epoca":false},"2025":{"rank":{"indy":["A. Palou","P. O'Ward","S. Dixon","K. Kirkwood","C. Lundgaard","C. Herta","F. Rosenqvist","M. Armstrong","W. Power","S. McLaughlin","S. Ferrucci","C. Rasmussen","J. Newgarden","D. Malukas","R. van Kalmthout","A. Rossi","K. Simpson","C. Daly","G. Rahal","M. Ericsson","C. Ilott","N. Siegel","L. Foster","R. Shwartzman","R. Robb","D. DeFrancesco","J. Abel"],"f1":["A. Palou","P. O'Ward","C. Lundgaard","K. Kirkwood","S. Dixon","W. Power","S. McLaughlin","F. Rosenqvist","C. Herta","J. Newgarden","M. Armstrong","C. Rasmussen","S. Ferrucci","K. Simpson","R. van Kalmthout","D. Malukas","A. Rossi","C. Daly","G. Rahal","C. Ilott","M. Ericsson","N. Siegel","R. Shwartzman","R. Robb","L. Foster","D. DeFrancesco","J. Abel"],"i500":["A. Palou","P. O'Ward","C. Lundgaard","S. Dixon","K. Kirkwood","F. Rosenqvist","C. Herta","M. Armstrong","W. Power","S. McLaughlin","D. Malukas","S. Ferrucci","C. Rasmussen","J. Newgarden","R. van Kalmthout","A. Rossi","C. Daly","K. Simpson","G. Rahal","M. Ericsson","L. Foster","N. Siegel","C. Ilott","R. Shwartzman","D. DeFrancesco","R. Robb","J. Abel"],"final":["A. Palou","P. O'Ward","S. Dixon","K. Kirkwood","C. Lundgaard","F. Rosenqvist","C. Herta","S. McLaughlin","M. Armstrong","W. Power","J. Newgarden","S. Ferrucci","R. van Kalmthout","C. Rasmussen","A. Rossi","K. Simpson","D. Malukas","C. Daly","G. Rahal","M. Ericsson","C. Ilott","N. Siegel","L. Foster","R. Shwartzman","R. Robb","D. DeFrancesco","J. Abel"],"ambas":["A. Palou","P. O'Ward","S. Dixon","K. Kirkwood","C. Lundgaard","F. Rosenqvist","C. Herta","S. McLaughlin","M. Armstrong","W. Power","S. Ferrucci","J. Newgarden","D. Malukas","C. Rasmussen","R. van Kalmthout","C. Daly","A. Rossi","K. Simpson","G. Rahal","M. Ericsson","C. Ilott","N. Siegel","L. Foster","R. Shwartzman","R. Robb","D. DeFrancesco","J. Abel"],"hib":["A. Palou","P. O'Ward","C. Lundgaard","S. Dixon","K. Kirkwood","F. Rosenqvist","C. Herta","C. Rasmussen","S. Ferrucci","S. McLaughlin","J. Newgarden","M. Armstrong","W. Power","D. Malukas","C. Daly","R. van Kalmthout","K. Simpson","A. Rossi","G. Rahal","M. Ericsson","R. Shwartzman","C. Ilott","L. Foster","D. DeFrancesco","N. Siegel","R. Robb","J. Abel"],"hib2":["A. Palou","P. O'Ward","K. Kirkwood","C. Lundgaard","S. Dixon","W. Power","C. Herta","S. McLaughlin","F. Rosenqvist","M. Armstrong","R. van Kalmthout","A. Rossi","J. Newgarden","S. Ferrucci","D. Malukas","K. Simpson","C. Rasmussen","G. Rahal","C. Ilott","M. Ericsson","N. Siegel","C. Daly","L. Foster","R. Robb","R. Shwartzman","D. DeFrancesco","J. Abel"],"i30":["A. Palou","P. O'Ward","C. Lundgaard","S. Dixon","K. Kirkwood","W. Power","S. McLaughlin","F. Rosenqvist","C. Herta","J. Newgarden","M. Armstrong","C. Rasmussen","S. Ferrucci","D. Malukas","R. van Kalmthout","A. Rossi","K. Simpson","G. Rahal","C. Daly","C. Ilott","M. Ericsson","N. Siegel","L. Foster","R. Shwartzman","R. Robb","D. DeFrancesco","J. Abel"],"oficial":["A. Palou","P. O'Ward","S. Dixon","K. Kirkwood","C. Lundgaard","F. Rosenqvist","C. Herta","M. Armstrong","W. Power","S. McLaughlin","D. Malukas","J. Newgarden","C. Rasmussen","R. van Kalmthout","A. Rossi","S. Ferrucci","K. Simpson","C. Daly","G. Rahal","M. Ericsson","C. Ilott","N. Siegel","L. Foster","R. Shwartzman","R. Robb","D. DeFrancesco","J. Abel"]},"pilotos":{"A. Palou":{"eq":"Chip Ganassi Racing","of":711,"ofp":1,"s":{"indy":672,"f1":301,"i500":722,"final":712,"ambas":762,"hib":435,"hib2":538,"i30":389},"v":8,"pd":13,"t10":15,"i5":1,"fi":2},"P. O'Ward":{"eq":"Arrow McLaren","of":515,"ofp":2,"s":{"indy":491,"f1":175,"i500":526,"final":497,"ambas":532,"hib":288,"hib2":378,"i30":241},"v":2,"pd":6,"t10":12,"i5":3,"fi":24},"S. Dixon":{"eq":"Chip Ganassi Racing","of":452,"ofp":3,"s":{"indy":434,"f1":104,"i500":444,"final":452,"ambas":462,"hib":213,"hib2":325,"i30":184},"v":1,"pd":3,"t10":12,"i5":20,"fi":12},"K. Kirkwood":{"eq":"Andretti Global","of":433,"ofp":4,"s":{"indy":423,"f1":125,"i500":428,"final":451,"ambas":456,"hib":210,"hib2":338,"i30":183},"v":3,"pd":3,"t10":10,"i5":32,"fi":6},"C. Lundgaard":{"eq":"Arrow McLaren","of":431,"ofp":5,"s":{"indy":422,"f1":129,"i500":448,"final":427,"ambas":453,"hib":219,"hib2":332,"i30":186},"v":0,"pd":6,"t10":11,"i5":7,"fi":25},"F. Rosenqvist":{"eq":"Meyer Shank Racing","of":372,"ofp":6,"s":{"indy":360,"f1":81,"i500":392,"final":386,"ambas":418,"hib":176,"hib2":265,"i30":138},"v":0,"pd":1,"t10":10,"i5":4,"fi":7},"C. Herta":{"eq":"Andretti Global","of":372,"ofp":7,"s":{"indy":365,"f1":79,"i500":381,"final":384,"ambas":400,"hib":173,"hib2":271,"i30":133},"v":0,"pd":2,"t10":8,"i5":14,"fi":11},"M. Armstrong":{"eq":"Meyer Shank Racing","of":364,"ofp":8,"s":{"indy":357,"f1":64,"i500":369,"final":368,"ambas":380,"hib":166,"hib2":255,"i30":123},"v":0,"pd":1,"t10":11,"i5":18,"fi":19},"W. Power":{"eq":"Team Penske","of":357,"ofp":9,"s":{"indy":350,"f1":101,"i500":364,"final":359,"ambas":373,"hib":160,"hib2":291,"i30":144},"v":1,"pd":3,"t10":8,"i5":16,"fi":21},"S. McLaughlin":{"eq":"Team Penske","of":356,"ofp":10,"s":{"indy":344,"f1":96,"i500":349,"final":379,"ambas":384,"hib":172,"hib2":268,"i30":143},"v":0,"pd":3,"t10":9,"i5":30,"fi":3},"D. Malukas":{"eq":"A.J. Foyt Enterprises","of":318,"ofp":11,"s":{"indy":305,"f1":42,"i500":345,"final":310,"ambas":350,"hib":145,"hib2":202,"i30":103},"v":0,"pd":1,"t10":5,"i5":2,"fi":26},"J. Newgarden":{"eq":"Team Penske","of":316,"ofp":12,"s":{"indy":307,"f1":68,"i500":315,"final":357,"ambas":365,"hib":167,"hib2":208,"i30":124},"v":1,"pd":3,"t10":7,"i5":22,"fi":1},"C. Rasmussen":{"eq":"Ed Carpenter Racing","of":313,"ofp":13,"s":{"indy":309,"f1":62,"i500":337,"final":314,"ambas":342,"hib":172,"hib2":199,"i30":113},"v":1,"pd":2,"t10":6,"i5":6,"fi":27},"R. van Kalmthout":{"eq":"Dale Coyne Racing","of":305,"ofp":14,"s":{"indy":302,"f1":43,"i500":307,"final":319,"ambas":324,"hib":132,"hib2":213,"i30":96},"v":0,"pd":1,"t10":7,"i5":27,"fi":13},"A. Rossi":{"eq":"Ed Carpenter Racing","of":297,"ofp":15,"s":{"indy":293,"f1":31,"i500":298,"final":313,"ambas":318,"hib":112,"hib2":212,"i30":89},"v":0,"pd":0,"t10":7,"i5":28,"fi":10},"S. Ferrucci":{"eq":"A.J. Foyt Enterprises","of":293,"ofp":16,"s":{"indy":314,"f1":61,"i500":344,"final":338,"ambas":368,"hib":172,"hib2":203,"i30":112},"v":0,"pd":2,"t10":6,"i5":5,"fi":8},"K. Simpson":{"eq":"Chip Ganassi Racing","of":282,"ofp":17,"s":{"indy":279,"f1":47,"i500":284,"final":311,"ambas":316,"hib":126,"hib2":200,"i30":87},"v":0,"pd":1,"t10":6,"i5":25,"fi":4},"C. Daly":{"eq":"Juncos Hollinger Racing","of":268,"ofp":18,"s":{"indy":265,"f1":28,"i500":289,"final":295,"ambas":319,"hib":139,"hib2":154,"i30":67},"v":0,"pd":0,"t10":4,"i5":8,"fi":5},"G. Rahal":{"eq":"Rahal Letterman Lanigan Racing","of":260,"ofp":19,"s":{"indy":256,"f1":26,"i500":269,"final":264,"ambas":277,"hib":91,"hib2":191,"i30":70},"v":0,"pd":0,"t10":3,"i5":17,"fi":22},"M. Ericsson":{"eq":"Andretti Global","of":234,"ofp":20,"s":{"indy":228,"f1":18,"i500":233,"final":243,"ambas":248,"hib":89,"hib2":157,"i30":55},"v":0,"pd":0,"t10":2,"i5":31,"fi":15},"C. Ilott":{"eq":"Prema Racing","of":218,"ofp":21,"s":{"indy":217,"f1":22,"i500":222,"final":239,"ambas":244,"hib":80,"hib2":159,"i30":56},"v":0,"pd":0,"t10":4,"i5":33,"fi":9},"N. Siegel":{"eq":"Arrow McLaren","of":213,"ofp":22,"s":{"indy":209,"f1":6,"i500":226,"final":222,"ambas":239,"hib":58,"hib2":157,"i30":44},"v":0,"pd":0,"t10":2,"i5":13,"fi":17},"L. Foster":{"eq":"Rahal Letterman Lanigan Racing","of":213,"ofp":23,"s":{"indy":209,"f1":0,"i500":227,"final":219,"ambas":237,"hib":78,"hib2":131,"i30":42},"v":0,"pd":0,"t10":0,"i5":12,"fi":20},"R. Shwartzman":{"eq":"Prema Racing","of":211,"ofp":24,"s":{"indy":198,"f1":3,"i500":203,"final":214,"ambas":219,"hib":85,"hib2":116,"i30":33},"v":0,"pd":0,"t10":2,"i5":26,"fi":14},"R. Robb":{"eq":"Sting Juncos Hollinger Racing","of":181,"ofp":25,"s":{"indy":180,"f1":2,"i500":187,"final":194,"ambas":201,"hib":55,"hib2":127,"i30":27},"v":0,"pd":0,"t10":1,"i5":23,"fi":16},"D. DeFrancesco":{"eq":"Rahal Letterman Lanigan Racing","of":171,"ofp":26,"s":{"indy":169,"f1":0,"i500":188,"final":181,"ambas":200,"hib":68,"hib2":101,"i30":25},"v":0,"pd":0,"t10":0,"i5":11,"fi":18},"J. Abel":{"eq":"Dale Coyne Racing","of":123,"ofp":27,"s":{"indy":123,"f1":0,"i500":123,"final":130,"ambas":130,"hib":49,"hib2":74,"i30":21},"v":0,"pd":0,"t10":0,"i5":null,"fi":23}},"etapas":[{"n":"St. Petersburg","t":"street","i5":false,"fin":false,"pend":false},{"n":"Thermal Club","t":"road","i5":false,"fin":false,"pend":false},{"n":"Long Beach","t":"street","i5":false,"fin":false,"pend":false},{"n":"Barber","t":"road","i5":false,"fin":false,"pend":false},{"n":"GP de Indianápolis","t":"road","i5":false,"fin":false,"pend":false},{"n":"Indy 500","t":"oval","i5":true,"fin":false,"pend":false},{"n":"Detroit","t":"street","i5":false,"fin":false,"pend":false},{"n":"Gateway","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Road America","t":"road","i5":false,"fin":false,"pend":false},{"n":"Mid-Ohio","t":"road","i5":false,"fin":false,"pend":false},{"n":"Iowa 1","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Iowa 2","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Toronto","t":"street","i5":false,"fin":false,"pend":false},{"n":"Laguna Seca","t":"road","i5":false,"fin":false,"pend":false},{"n":"Portland","t":"road","i5":false,"fin":false,"pend":false},{"n":"Milwaukee","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Nashville Superspeedway","t":"oval","i5":false,"fin":true,"pend":false}],"n_etapas":17,"n_disp":17,"pendentes":[],"n_ovais":6,"i500_round":6,"final":"Nashville Superspeedway","final_real":true,"i500_epoca":false},"2026":{"rank":{"indy":["A. Palou","C. Lundgaard","K. Kirkwood","P. O'Ward","D. Malukas","S. McLaughlin","J. Newgarden","M. Ericsson","R. van Kalmthout","F. Rosenqvist","W. Power","S. Dixon","K. Simpson","G. Rahal","M. Armstrong","A. Rossi","S. Ferrucci","N. Siegel","L. Foster","R. Grosjean","C. Rasmussen","D. Hauger","M. Schumacher","C. Collet","R. Robb"],"f1":["A. Palou","C. Lundgaard","K. Kirkwood","P. O'Ward","D. Malukas","S. McLaughlin","J. Newgarden","M. Ericsson","W. Power","F. Rosenqvist","R. van Kalmthout","G. Rahal","S. Dixon","C. Rasmussen","M. Armstrong","K. Simpson","R. Grosjean","A. Rossi","L. Foster","S. Ferrucci","N. Siegel","D. Hauger","M. Schumacher","C. Collet","R. Robb"],"i500":["A. Palou","P. O'Ward","C. Lundgaard","K. Kirkwood","D. Malukas","S. McLaughlin","M. Ericsson","F. Rosenqvist","J. Newgarden","R. van Kalmthout","W. Power","S. Dixon","M. Armstrong","K. Simpson","G. Rahal","S. Ferrucci","N. Siegel","R. Grosjean","A. Rossi","L. Foster","C. Rasmussen","D. Hauger","M. Schumacher","C. Collet","R. Robb"],"final":["A. Palou","P. O'Ward","C. Lundgaard","K. Kirkwood","D. Malukas","S. McLaughlin","M. Ericsson","J. Newgarden","R. van Kalmthout","F. Rosenqvist","W. Power","S. Dixon","K. Simpson","M. Armstrong","G. Rahal","A. Rossi","S. Ferrucci","N. Siegel","L. Foster","C. Rasmussen","R. Grosjean","D. Hauger","M. Schumacher","C. Collet","R. Robb"],"ambas":["A. Palou","P. O'Ward","C. Lundgaard","K. Kirkwood","D. Malukas","S. McLaughlin","M. Ericsson","F. Rosenqvist","R. van Kalmthout","J. Newgarden","W. Power","S. Dixon","M. Armstrong","K. Simpson","G. Rahal","S. Ferrucci","N. Siegel","A. Rossi","L. Foster","R. Grosjean","C. Rasmussen","D. Hauger","M. Schumacher","C. Collet","R. Robb"],"hib":["A. Palou","P. O'Ward","K. Kirkwood","D. Malukas","C. Lundgaard","S. McLaughlin","M. Ericsson","J. Newgarden","F. Rosenqvist","R. van Kalmthout","W. Power","S. Dixon","M. Armstrong","C. Rasmussen","K. Simpson","G. Rahal","S. Ferrucci","A. Rossi","R. Grosjean","M. Schumacher","N. Siegel","L. Foster","D. Hauger","R. Robb","C. Collet"],"hib2":["A. Palou","C. Lundgaard","K. Kirkwood","P. O'Ward","D. Malukas","J. Newgarden","S. McLaughlin","M. Ericsson","W. Power","F. Rosenqvist","R. van Kalmthout","G. Rahal","S. Dixon","K. Simpson","M. Armstrong","A. Rossi","R. Grosjean","N. Siegel","L. Foster","D. Hauger","S. Ferrucci","C. Collet","C. Rasmussen","R. Robb","M. Schumacher"],"i30":["A. Palou","C. Lundgaard","K. Kirkwood","P. O'Ward","D. Malukas","S. McLaughlin","J. Newgarden","M. Ericsson","F. Rosenqvist","R. van Kalmthout","W. Power","G. Rahal","M. Armstrong","S. Dixon","K. Simpson","R. Grosjean","C. Rasmussen","A. Rossi","S. Ferrucci","N. Siegel","L. Foster","D. Hauger","M. Schumacher","C. Collet","R. Robb"],"oficial":["A. Palou","C. Lundgaard","K. Kirkwood","P. O'Ward","D. Malukas","S. McLaughlin","J. Newgarden","M. Ericsson","F. Rosenqvist","R. van Kalmthout","W. Power","S. Dixon","K. Simpson","M. Armstrong","G. Rahal","A. Rossi","S. Ferrucci","N. Siegel","L. Foster","R. Grosjean","C. Rasmussen","D. Hauger","M. Schumacher","C. Collet","R. Robb"]},"pilotos":{"A. Palou":{"eq":"Chip Ganassi Racing","of":607,"ofp":1,"s":{"indy":567,"f1":227,"i500":593,"final":597,"ambas":623,"hib":330,"hib2":464,"i30":294},"v":6,"pd":7,"t10":14,"i5":7,"fi":5},"C. Lundgaard":{"eq":"Arrow McLaren","of":507,"ofp":2,"s":{"indy":498,"f1":169,"i500":511,"final":533,"ambas":546,"hib":272,"hib2":395,"i30":229},"v":2,"pd":7,"t10":13,"i5":17,"fi":3},"K. Kirkwood":{"eq":"Andretti Global","of":505,"ofp":3,"s":{"indy":495,"f1":165,"i500":509,"final":523,"ambas":537,"hib":275,"hib2":385,"i30":226},"v":2,"pd":5,"t10":14,"i5":16,"fi":6},"P. O'Ward":{"eq":"Arrow McLaren","of":503,"ofp":4,"s":{"indy":487,"f1":157,"i500":519,"final":537,"ambas":569,"hib":286,"hib2":358,"i30":224},"v":3,"pd":3,"t10":11,"i5":4,"fi":1},"D. Malukas":{"eq":"Team Penske","of":484,"ofp":5,"s":{"indy":464,"f1":150,"i500":504,"final":496,"ambas":536,"hib":274,"hib2":340,"i30":217},"v":0,"pd":6,"t10":12,"i5":2,"fi":4},"S. McLaughlin":{"eq":"Team Penske","of":428,"ofp":6,"s":{"indy":417,"f1":113,"i500":452,"final":457,"ambas":492,"hib":235,"hib2":295,"i30":174},"v":0,"pd":3,"t10":11,"i5":3,"fi":2},"J. Newgarden":{"eq":"Team Penske","of":408,"ofp":7,"s":{"indy":400,"f1":104,"i500":405,"final":405,"ambas":410,"hib":206,"hib2":298,"i30":169},"v":2,"pd":3,"t10":11,"i5":28,"fi":25},"M. Ericsson":{"eq":"Andretti Global","of":407,"ofp":8,"s":{"indy":399,"f1":103,"i500":416,"final":421,"ambas":438,"hib":215,"hib2":287,"i30":163},"v":1,"pd":2,"t10":11,"i5":13,"fi":9},"F. Rosenqvist":{"eq":"Meyer Shank Racing with Curb-Agajanian","of":379,"ofp":9,"s":{"indy":356,"f1":83,"i500":406,"final":366,"ambas":416,"hib":185,"hib2":254,"i30":149},"v":1,"pd":3,"t10":6,"i5":1,"fi":20},"R. van Kalmthout":{"eq":"Juncos Hollinger Racing","of":364,"ofp":10,"s":{"indy":360,"f1":73,"i500":388,"final":386,"ambas":414,"hib":179,"hib2":254,"i30":132},"v":0,"pd":1,"t10":8,"i5":6,"fi":7},"W. Power":{"eq":"Andretti Global","of":351,"ofp":11,"s":{"indy":339,"f1":87,"i500":344,"final":355,"ambas":360,"hib":157,"hib2":269,"i30":129},"v":0,"pd":5,"t10":7,"i5":29,"fi":14},"S. Dixon":{"eq":"Chip Ganassi Racing","of":318,"ofp":12,"s":{"indy":310,"f1":45,"i500":325,"final":325,"ambas":340,"hib":137,"hib2":218,"i30":93},"v":0,"pd":1,"t10":6,"i5":15,"fi":15},"K. Simpson":{"eq":"Chip Ganassi Racing","of":307,"ofp":13,"s":{"indy":300,"f1":29,"i500":316,"final":311,"ambas":327,"hib":118,"hib2":211,"i30":86},"v":0,"pd":0,"t10":7,"i5":14,"fi":19},"M. Armstrong":{"eq":"Meyer Shank Racing with Curb-Agajanian","of":293,"ofp":14,"s":{"indy":289,"f1":33,"i500":319,"final":303,"ambas":333,"hib":133,"hib2":189,"i30":94},"v":0,"pd":0,"t10":6,"i5":5,"fi":16},"G. Rahal":{"eq":"Rahal Letterman Lanigan Racing","of":291,"ofp":15,"s":{"indy":289,"f1":53,"i500":299,"final":297,"ambas":307,"hib":116,"hib2":226,"i30":97},"v":0,"pd":3,"t10":6,"i5":20,"fi":22},"A. Rossi":{"eq":"Ed Carpenter Racing","of":271,"ofp":16,"s":{"indy":259,"f1":20,"i500":264,"final":278,"ambas":283,"hib":99,"hib2":180,"i30":67},"v":0,"pd":0,"t10":4,"i5":30,"fi":11},"S. Ferrucci":{"eq":"A.J. Foyt Enterprises","of":262,"ofp":17,"s":{"indy":254,"f1":11,"i500":278,"final":272,"ambas":296,"hib":112,"hib2":153,"i30":67},"v":0,"pd":0,"t10":4,"i5":8,"fi":12},"N. Siegel":{"eq":"Arrow McLaren","of":253,"ofp":18,"s":{"indy":252,"f1":10,"i500":271,"final":265,"ambas":284,"hib":94,"hib2":168,"i30":64},"v":0,"pd":0,"t10":3,"i5":11,"fi":17},"L. Foster":{"eq":"Rahal Letterman Lanigan Racing","of":251,"ofp":19,"s":{"indy":245,"f1":13,"i500":254,"final":265,"ambas":274,"hib":90,"hib2":168,"i30":54},"v":0,"pd":0,"t10":3,"i5":21,"fi":10},"R. Grosjean":{"eq":"Dale Coyne Racing","of":247,"ofp":20,"s":{"indy":244,"f1":25,"i500":266,"final":250,"ambas":272,"hib":98,"hib2":171,"i30":68},"v":0,"pd":1,"t10":4,"i5":9,"fi":24},"C. Rasmussen":{"eq":"Ed Carpenter Racing","of":236,"ofp":21,"s":{"indy":231,"f1":35,"i500":236,"final":255,"ambas":260,"hib":124,"hib2":142,"i30":68},"v":0,"pd":1,"t10":4,"i5":27,"fi":8},"D. Hauger":{"eq":"Dale Coyne Racing","of":223,"ofp":22,"s":{"indy":221,"f1":5,"i500":232,"final":230,"ambas":241,"hib":63,"hib2":163,"i30":45},"v":0,"pd":0,"t10":2,"i5":19,"fi":21},"M. Schumacher":{"eq":"Rahal Letterman Lanigan Racing","of":205,"ofp":23,"s":{"indy":205,"f1":4,"i500":217,"final":222,"ambas":234,"hib":97,"hib2":112,"i30":37},"v":0,"pd":0,"t10":1,"i5":18,"fi":13},"C. Collet":{"eq":"A.J. Foyt Enterprises","of":193,"ofp":24,"s":{"indy":191,"f1":2,"i500":196,"final":198,"ambas":203,"hib":44,"hib2":149,"i30":33},"v":0,"pd":0,"t10":1,"i5":26,"fi":23},"R. Robb":{"eq":"Sting Juncos Hollinger Racing","of":175,"ofp":25,"s":{"indy":175,"f1":0,"i500":182,"final":187,"ambas":194,"hib":62,"hib2":113,"i30":25},"v":0,"pd":0,"t10":0,"i5":23,"fi":18}},"etapas":[{"n":"St. Petersburg","t":"street","i5":false,"fin":false,"pend":false},{"n":"Phoenix","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Arlington","t":"street","i5":false,"fin":false,"pend":false},{"n":"Barber","t":"road","i5":false,"fin":false,"pend":false},{"n":"Long Beach","t":"street","i5":false,"fin":false,"pend":false},{"n":"GP de Indianápolis","t":"road","i5":false,"fin":false,"pend":false},{"n":"Indy 500","t":"oval","i5":true,"fin":false,"pend":false},{"n":"Detroit","t":"street","i5":false,"fin":false,"pend":false},{"n":"Gateway","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Road America","t":"road","i5":false,"fin":false,"pend":false},{"n":"Mid-Ohio","t":"road","i5":false,"fin":false,"pend":false},{"n":"Nashville Superspeedway","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Portland","t":"road","i5":false,"fin":false,"pend":false},{"n":"Markham","t":"street","i5":false,"fin":false,"pend":false},{"n":"Washington D.C.","t":"street","i5":false,"fin":false,"pend":false},{"n":"Milwaukee 1","t":"oval","i5":false,"fin":false,"pend":false},{"n":"Milwaukee 2","t":"oval","i5":false,"fin":true,"pend":false},{"n":"Laguna Seca","t":"road","i5":false,"fin":false,"pend":true}],"n_etapas":18,"n_disp":17,"pendentes":["Laguna Seca"],"n_ovais":6,"i500_round":7,"final":"Milwaukee 2","final_real":false,"i500_epoca":false}},"tabelas":{"indy":[50,40,35,32,30,28,26,24,22,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,5,5,5,5,5,5,5,5],"f1":[25,18,15,12,10,8,6,4,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"indy30":[30,22,18,15,13,11,10,9,8,7,6,5,4,3,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]}};
+const ANALISES = {"2021": "\n<p><span class=\"drv\">Palou</span> é campeão nas oito réguas, com folga em todas. Abaixo dele, porém, 2021 é o melhor\nlaboratório da coleção para uma pergunta específica: <em>o que a dobra da Indy 500 fazia?</em></p>\n<p>A regra estava em vigor, então a coluna <strong>+Indy 500</strong> é o sistema real da época e a régua base mostra o\nano sem ela. Tirar a dobra troca o terceiro lugar: <span class=\"drv\">O'Ward</span>, que foi quarto nas 500 Milhas, cai\npara quarto no campeonato, e <span class=\"drv\">Dixon</span> — décimo sétimo em Indianápolis — sobe a terceiro. Mais\natrás, <span class=\"drv\">Ericsson</span> sai do top 5 e <span class=\"drv\">Herta</span> entra. Nenhum título em jogo,\nduas posições trocadas.</p>\n<p>Trocar a curva inteira faz menos diferença que isso. A pontuação da F1 devolve exatamente o top 5 oficial da\ntemporada — Palou, Newgarden, O'Ward, Dixon, Herta — e a proposta Indy 30 chega ao mesmo resultado. Só a régua da\nfinal em dobro reordena de verdade: Herta venceu Long Beach, a decisão do ano, e sobe de quinto para quarto, enquanto\nO'Ward, que abandonou ali, cai para quinto.</p>\n", "2022": "\n<p>O ano em que a régua deveria importar e não importou. <span class=\"drv\">Power</span> foi campeão com <em>uma</em>\nvitória, contra cinco de <span class=\"drv\">Newgarden</span> e três de <span class=\"drv\">McLaughlin</span> — exatamente\no perfil de campeão que se acusa a tabela achatada da IndyCar de fabricar. E ele vence nas oito réguas, inclusive na da\nF1, porque a regularidade dele não era de décimos lugares: foram <strong>nove pódios em dezessete provas</strong>. A\npontuação da F1 pune o sétimo lugar, não o segundo.</p>\n<p>A dobra da Indy 500 ainda valia, e 2022 mostra o maior efeito dela em seis anos. <span class=\"drv\">Ericsson</span>\nvenceu as 500 Milhas; com a regra da época ele é quarto no campeonato, e <strong>sem a dobra cai para sexto</strong> —\nduas posições que dependiam de uma corrida só. <span class=\"drv\">McLaughlin</span> e <span class=\"drv\">Palou</span>\nsobem no lugar dele.</p>\n<p>Os outros movimentos são os de sempre. McLaughlin passa Dixon pela terceira colocação nas réguas mais íngremes —\ntrês vitórias e sete pódios contra duas e quatro — e, na régua com peso no misto, chega a tomar o vice de\n<span class=\"drv\">Newgarden</span>, o único lugar da página em que isso acontece. E Palou salta de quinto para terceiro\nquando a final vale dobrado, porque venceu Laguna Seca.</p>\n", "2023": "\n<p>Primeira temporada sem a dobra da Indy 500, e a primeira em que a coluna <strong>+Indy 500</strong> deixa de ser\nhistória para virar proposta. Reintroduzir o multiplicador promoveria <span class=\"drv\">Newgarden</span>, vencedor das\n500 Milhas, de quinto a terceiro — mas não chega perto do título.</p>\n<p>Título e vice estão fechados em qualquer régua: <span class=\"drv\">Palou</span> com cinco vitórias e dez pódios em\ndezessete provas, <span class=\"drv\">Dixon</span> em segundo nas oito. A disputa é pelo terceiro lugar, e ela é\ninteiramente uma questão de tabela.</p>\n<p><span class=\"drv\">McLaughlin</span> somou uma vitória, quatro pódios e catorze top 10. Newgarden somou quatro\nvitórias, cinco pódios e apenas onze top 10. Na tabela da IndyCar o primeiro é terceiro e o segundo é quinto; na F1, no\nhíbrido e na Indy 30 a ordem se inverte exatamente. É o caso mais limpo do conjunto: as mesmas duas temporadas produzem\nposições opostas conforme se pague pela vitória ou pela presença.</p>\n", "2024": "\n<p><strong>O único ano em que o troféu troca de mãos — e troca duas vezes.</strong></p>\n<p>Com a <strong>última etapa valendo o dobro</strong>, <span class=\"drv\">Herta</span> é campeão. Ele venceu Nashville,\na decisão da temporada, com Palou em décimo primeiro. Os 27 pontos que separavam os dois na régua base viram uma\nvantagem de quatro pontos para Herta. Foi o ano mais equilibrado do período — cinco pilotos entre 524 e 449 pontos,\ntodos com duas ou três vitórias — e num campeonato assim qualquer multiplicador colocado na etapa certa decide.</p>\n<p>No <strong>híbrido com peso no oval</strong>, <span class=\"drv\">McLaughlin</span> é campeão. 2024 teve sete ovais\nem dezessete provas, o calendário mais oval do conjunto. Pagar os ovais pela tabela cheia da IndyCar e os mistos pela\ntabela da F1 dobra o peso relativo de um oval, e McLaughlin venceu em Iowa e em Milwaukee enquanto Palou construía o\ntítulo dele nos circuitos mistos. É a única régua que muda um campeão sem usar multiplicador nenhum — ela não mexe na\ncurva de pontos, mexe no calendário.</p>\n<p>Inverta o híbrido e o mesmo McLaughlin <strong>despenca para quinto</strong>. É o maior deslocamento de um piloto\nentre duas réguas em toda a página, e a melhor medida do quanto 2024 foi uma temporada de especialistas: com peso no\nmisto quem sobe é <span class=\"drv\">Power</span>, que vai a vice. Nenhum dos dois híbridos é proposta séria de\nregulamento — mas juntos mostram que o campeonato de 2024 foi decidido tanto pelo calendário quanto pelos pilotos.</p>\n<p>E aqui está o melhor argumento contra multiplicadores: <strong>dobrar as duas etapas devolve o título a Palou</strong>.\nEle foi quinto na Indy 500 e Herta, vigésimo terceiro; os dois multiplicadores se cancelam. Quando o campeão depende de\nqual prova alguém decidiu privilegiar, o multiplicador está decidindo mais do que a temporada.</p>\n", "2025": "\n<p>Oito vitórias em dezessete provas. Nenhuma das oito réguas chega perto de ameaçar <span class=\"drv\">Palou</span> — e todas\napenas <em>ampliam</em> o que já era uma temporada desproporcional: a vantagem sobre <span class=\"drv\">O'Ward</span>\npassa de 37% na régua base para 72% na pontuação da F1. Curvas mais íngremes não criam campeões novos, engrandecem o\nque já existe.</p>\n<p>O top 5 tem sempre os mesmos cinco nomes, com <span class=\"drv\">Dixon</span> e <span class=\"drv\">Lundgaard</span>\nalternando o terceiro e o quinto lugar. Vale reparar que Lundgaard sobe <em>sem ter vencido nenhuma corrida</em>: são\nseis pódios contra três de Dixon. Não é a vitória que a tabela da F1 premia — é o pódio. Entre o primeiro e o segundo\nlugar vão sete pontos; entre o terceiro e o oitavo, onze.</p>\n<p>Reintroduzir a dobra da Indy 500 também favoreceria Lundgaard, sétimo em Indianápolis, contra um Kirkwood que bateu\ne terminou em trigésimo segundo. Fora do top 5 o remanejamento é mais violento: <span class=\"drv\">Power</span> sobe de\nnono para sexto na régua da F1 e cai para décimo terceiro no híbrido.</p>\n", "2026": "\n<p>Temporada em andamento, com dezessete das dezoito etapas disputadas — falta apenas Laguna Seca.\n<span class=\"drv\">Palou</span> lidera nas oito réguas e seis vitórias em catorze top 10 não deixam margem para a tabela\ninterferir no título.</p>\n<p>A briga é pelo vice, e aqui a régua importa de verdade. Na tabela em vigor,\n<span class=\"drv\">Lundgaard</span> é segundo, <span class=\"drv\">Kirkwood</span> terceiro e\n<span class=\"drv\">O'Ward</span> quarto, separados por onze pontos. Reintroduza a dobra da Indy 500 e\n<strong>O'Ward salta para segundo</strong> — ele foi quarto em Indianápolis, contra décimo sétimo de Lundgaard e décimo\nsexto de Kirkwood. O mesmo acontece com a final em dobro, porque O'Ward venceu a última prova disputada. São três\npilotos empilhados dentro da margem de erro de qualquer escolha de regulamento.</p>\n<p><em>Uma ressalva:</em> como Laguna Seca ainda não correu, o multiplicador de “final em dobro” está caindo sobre\nMilwaukee 2, a última etapa já disputada. Essa coluna precisa ser refeita quando a temporada fechar.</p>\n"};
+
+const SIS = DATA.sistemas, ANOS = Object.keys(DATA.anos), RULER = "indy";
+const short = d => d.replace(/^[A-Z]\.\s+/, "");
+const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c;
+  if (h != null) n.innerHTML = h; return n; };
+const FORMULAS = {
+  indy:"50 · 40 · 35 · 32 · 30 · 28 · 26 · 24 · 22 · 20 · 19 … 6 · 5 (25º e além)",
+  f1:"25 · 18 · 15 · 12 · 10 · 8 · 6 · 4 · 2 · 1 · 0 …",
+  i500:"tabela IndyCar · Indy 500 × 2",
+  final:"tabela IndyCar · última etapa × 2",
+  ambas:"tabela IndyCar · Indy 500 × 2 · última etapa × 2",
+  hib:"oval → tabela IndyCar · misto e rua → tabela F1",
+  hib2:"misto e rua → tabela IndyCar · oval → tabela F1",
+  i30:"30 · 22 · 18 · 15 · 13 · 11 · 10 · 9 · 8 · 7 · 6 · 5 · 4 · 3 · 2 · 1 (16º e além) · Indy 500 × 1,5",
+};
+/* subtítulo de cada coluna: descreve o que a régua faz.
+   A Indy 500 valeu pontos dobrados de 2014 a 2022, então duas colunas mudam de sentido por época. */
+const SUB = {
+  f1:    "só o top 10 pontua",
+  final: "última etapa vale 2×",
+  ambas: "Indy 500 e final 2×",
+  hib:   "IndyCar no oval, F1 no misto",
+  hib2:  "IndyCar no misto, F1 no oval",
+  i30:   "curva própria",
+};
+function selo(sid, A){
+  if (sid === RULER)  return A.i500_epoca ? "sem a dobra da Indy 500" : "regra em vigor hoje";
+  if (sid === "i500") return A.i500_epoca ? "regra da época: Indy 500 2×" : "Indy 500 vale 2×";
+  return SUB[sid] || "";
+}
+
+/* ---------------- matriz de um ano ---------------- */
+function matriz(ano){
+  const A = DATA.anos[ano], P = A.pilotos, base = A.rank[RULER];
+  const cols = [{id:"oficial", curta:"Oficial",
+    desc:"Classificação real da temporada, com os pontos como foram somados na época — inclui os bônus de pole e de voltas lideradas."}].concat(SIS);
+  const tb = el("table","matrix");
+  const htr = el("tr");
+  htr.appendChild(el("th","poscol","#"));
+  cols.forEach(c => {
+    const th = el("th", c.id === RULER ? "ruler" : (c.id === "oficial" ? "official" : ""));
+    const sub = c.id === "oficial" ? "temporada real" : selo(c.id, A);
+    const marca = (c.id === RULER || c.id === "i500") ? " mark" : "";
+    th.innerHTML = c.curta + '<span class="sub'+marca+'">' + sub + "</span>";
+    th.title = c.desc;
+    htr.appendChild(th);
+  });
+  const thead = el("thead"); thead.appendChild(htr); tb.appendChild(thead);
+
+  const tbody = el("tbody");
+  const ctr = el("tr","champbar");
+  ctr.appendChild(el("td","poscol",""));
+  const champBase = base[0];
+  cols.forEach(c => {
+    const w = A.rank[c.id][0];
+    const td = el("td", (c.id !== "oficial" && w !== champBase) ? "diff" : "");
+    td.dataset.driver = w;
+    td.innerHTML = '<span class="cell"><span class="nm">'+ short(w) +"</span></span>";
+    ctr.appendChild(td);
+  });
+  tbody.appendChild(ctr);
+
+  for (let i = 0; i < 10; i++){
+    const tr = el("tr", i === 0 ? "champrow" : "");
+    tr.appendChild(el("td","poscol", String(i+1)));
+    cols.forEach(c => {
+      const d = A.rank[c.id][i];
+      const td = el("td", c.id === RULER ? "is-ruler" : (c.id === "oficial" ? "is-official" : ""));
+      if (!d){ td.appendChild(el("span","cell","")); tr.appendChild(td); return; }
+      td.dataset.driver = d;
+      const pts = c.id === "oficial" ? P[d].of : P[d].s[c.id];
+      let dl = "";
+      if (c.id !== "oficial" && c.id !== RULER){
+        const was = base.indexOf(d) + 1, now = i + 1;
+        if (was > 0 && was !== now)
+          dl = '<span class="dl '+(now < was ? "up" : "down")+'">'+(now < was ? "▲" : "▼")+Math.abs(was-now)+"</span>";
+      }
+      td.innerHTML = '<span class="cell"><span class="nm">'+ short(d) +"</span>"+
+        '<span class="row2"><span class="pt">'+ pts +"</span>"+ dl +"</span></span>";
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  }
+  tb.appendChild(tbody);
+  return tb;
+}
+
+/* ---------------- painel de ano ---------------- */
+function painelAno(ano){
+  const A = DATA.anos[ano], sec = el("section","panel"), w = el("div","wrap");
+  sec.id = "p-" + ano;
+
+  const head = el("div","panel-head");
+  head.appendChild(el("h2","ano", ano));
+  const champs = new Set(SIS.map(s => A.rank[s.id][0]));
+  const ctx = el("div","ctx");
+  ctx.innerHTML =
+    "<span><b>"+A.n_etapas+"</b> etapas</span>" +
+    "<span><b>"+A.n_ovais+"</b> em oval</span>" +
+    "<span>Indy 500 na <b>"+A.i500_round+"ª</b></span>" +
+    "<span>final em <b>"+A.final+"</b></span>" +
+    (A.i500_epoca ? '<span style="color:var(--gold);font-weight:600">Indy 500 valia dobro</span>' : "") +
+    (champs.size > 1 ? '<span style="color:var(--gold);font-weight:600">'+champs.size+" campeões diferentes</span>" : "");
+  head.appendChild(ctx);
+  w.appendChild(head);
+
+  let aviso = "";
+  if (A.i500_epoca)
+    aviso = "Em "+ano+" as 500 Milhas ainda valiam <b>pontuação dobrada</b> — regra que existiu de 2014 a 2022. "+
+      "Aqui a coluna <b>+Indy 500</b> é, portanto, a <em>regra da época</em>, e a régua base é o contrafactual: "+
+      "como o ano teria terminado <em>sem</em> a dobra. As duas colunas lado a lado respondem exatamente a isso.";
+  else if (A.pendentes.length)
+    aviso = "Temporada em andamento: <b>"+A.pendentes.join(" e ")+"</b> ainda não "+
+      (A.pendentes.length>1?"foi disputada":"foi disputada")+". O multiplicador de “final em dobro” está aplicado a <b>"+
+      A.final+"</b>, a última etapa já corrida, e não à decisão real do campeonato — essa coluna precisa ser refeita quando o ano fechar.";
+  if (aviso){
+    const n = el("div","notice");
+    n.innerHTML = '<span class="mk">!</span><span>'+aviso+"</span>";
+    w.appendChild(n);
+  }
+
+  const sc = el("div","matrix-scroll"); sc.appendChild(matriz(ano)); w.appendChild(sc);
+
+  const lg = el("div","legendrow");
+  lg.innerHTML =
+    '<span><span class="sw" style="background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)"></span>régua base</span>' +
+    '<span><span class="dl up">▲</span> subiu / <span class="dl down">▼</span> caiu em relação à régua base</span>' +
+    '<span><span class="sw" style="background:var(--gold-soft);box-shadow:inset 0 0 0 1px var(--gold)"></span>campeão diferente</span>' +
+    '<span style="color:var(--ink-2)">passe o cursor sobre um piloto para segui-lo entre as réguas</span>';
+  w.appendChild(lg);
+
+  const an = el("div","analysis");
+  const left = el("div");
+  left.appendChild(el("h3", null, "O que muda em " + ano));
+  left.appendChild(el("div","prose", ANALISES[ano]));
+  an.appendChild(left);
+
+  const right = el("div");
+  const c1 = el("div","sidecard");
+  let rows = "";
+  A.rank[RULER].slice(0,6).forEach(d => {
+    const p = A.pilotos[d];
+    rows += "<tr><td>"+short(d)+"</td><td>"+p.v+"V · "+p.pd+"P · "+p.t10+"T10</td></tr>";
+  });
+  c1.innerHTML = "<h4>Perfil dos seis primeiros</h4><table>"+rows+"</table>"+
+    '<p class="note">Vitórias · pódios · top 10 nas '+A.n_disp+" etapas disputadas. É o que separa uma régua da outra.</p>";
+  right.appendChild(c1);
+
+  const c2 = el("div","sidecard"); c2.style.marginTop = "14px";
+  let rows2 = "";
+  A.rank[RULER].slice(0,6).forEach(d => {
+    const p = A.pilotos[d];
+    rows2 += "<tr><td>"+short(d)+"</td><td>"+(p.i5 ? p.i5+"º" : "—")+" · "+(p.fi ? p.fi+"º" : "—")+"</td></tr>";
+  });
+  c2.innerHTML = "<h4>Nas etapas multiplicadas</h4><table>"+rows2+"</table>"+
+    '<p class="note">Posição na Indy 500 e na '+A.final+". São essas duas corridas que os multiplicadores ampliam.</p>";
+  right.appendChild(c2);
+
+  const c3 = el("div","sidecard"); c3.style.marginTop = "14px";
+  let chips = "";
+  A.etapas.forEach(e => {
+    const cls = "stg" + (e.t === "oval" ? " oval" : "") + (e.i5 ? " i5" : "") +
+                (e.fin ? " fin" : "") + (e.pend ? " off" : "");
+    let tt = e.t === "oval" ? "oval" : (e.t === "street" ? "circuito de rua" : "circuito misto");
+    if (e.pend) tt += " · ainda não disputada";
+    chips += '<span class="'+cls+'" title="'+tt+'">'+e.n+"</span>";
+  });
+  c3.innerHTML = "<h4>Calendário</h4><div class=\"stagelist\">"+chips+"</div>"+
+    '<div class="stagelist legenda"><span class="stg oval">oval</span><span class="stg i5">Indy 500</span>'+
+    '<span class="stg fin">final</span>'+(A.pendentes.length?'<span class="stg off">por correr</span>':"")+"</div>";
+  right.appendChild(c3);
+  an.appendChild(right);
+  w.appendChild(an);
+  sec.appendChild(w);
+  return sec;
+}
+
+/* ---------------- gráfico das curvas ---------------- */
+const CURVAS = [
+  {id:"indy",   nome:"IndyCar",   cor:"var(--s1)", key:"indy"},
+  {id:"f1",     nome:"Fórmula 1", cor:"var(--s2)", key:"f1"},
+  {id:"indy30", nome:"Indy 30",   cor:"var(--s3)", key:"indy30"},
+];
+const NPOS = 25;
+function grafico(){
+  const W = 780, H = 340, m = {t:14, r:96, b:42, l:46};
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const x = p => m.l + (p - 1) / (NPOS - 1) * iw;
+  const y = v => m.t + (1 - v / 100) * ih;
+  const series = CURVAS.map(c => {
+    const raw = DATA.tabelas[c.key].slice(0, NPOS);
+    return Object.assign({}, c, {vals: raw.map(v => v / raw[0] * 100)});
+  });
+  let s = '<svg class="curves" viewBox="0 0 '+W+" "+H+'" role="img" aria-label="Curvas de pontuação normalizadas">';
+  [0,25,50,75,100].forEach(v => {
+    s += '<line class="gridline" x1="'+m.l+'" x2="'+(m.l+iw)+'" y1="'+y(v)+'" y2="'+y(v)+'"/>';
+    s += '<text class="axistext" x="'+(m.l-9)+'" y="'+(y(v)+3.5)+'" text-anchor="end">'+v+"%</text>";
+  });
+  [1,5,10,15,20,25].forEach(p => {
+    s += '<text class="axistext" x="'+x(p)+'" y="'+(m.t+ih+16)+'" text-anchor="middle">'+p+"º</text>";
+  });
+  s += '<text class="axislabel" x="'+(m.l+iw/2)+'" y="'+(m.t+ih+35)+'" text-anchor="middle">posição de chegada</text>';
+  series.forEach(se => {
+    const d = se.vals.map((v,j) => (j?"L":"M") + x(j+1).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
+    s += '<path d="'+d+'" fill="none" stroke="'+se.cor+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    const lx = x(NPOS)+10, ly = y(se.vals[NPOS-1]) + (se.id==="f1" ? -9 : (se.id==="indy30" ? 6 : -1));
+    s += '<text class="dlabel" x="'+lx+'" y="'+(ly+4)+'" fill="'+se.cor+'">'+se.nome+"</text>";
+  });
+  s += '<g id="hov" style="opacity:0"><line class="hovline" y1="'+m.t+'" y2="'+(m.t+ih)+'"/>';
+  series.forEach((se,i) => s += '<circle r="4.5" fill="'+se.cor+'" stroke="var(--surface)" stroke-width="2" data-s="'+i+'"/>');
+  s += "</g>";
+  s += '<rect id="hit" x="'+m.l+'" y="'+m.t+'" width="'+iw+'" height="'+ih+'" fill="transparent"/></svg>';
+  return {svg:s, series, x, y, m, iw, ih, W};
+}
+function ligarGrafico(g){
+  const svg = document.querySelector("#p-pontuacao svg.curves");
+  if (!svg) return;
+  const hit = svg.querySelector("#hit"), hov = svg.querySelector("#hov");
+  const line = hov.querySelector("line"), dots = [...hov.querySelectorAll("circle")];
+  const tip = document.getElementById("tip");
+  const mostra = ev => {
+    const r = svg.getBoundingClientRect(), sc = g.W / r.width;
+    let p = Math.round(((ev.clientX - r.left) * sc - g.m.l) / g.iw * (NPOS - 1)) + 1;
+    p = Math.max(1, Math.min(NPOS, p));
+    const X = g.x(p);
+    hov.style.opacity = 1; line.setAttribute("x1", X); line.setAttribute("x2", X);
+    dots.forEach((c,i) => { c.setAttribute("cx", X); c.setAttribute("cy", g.y(g.series[i].vals[p-1])); });
+    tip.innerHTML = '<div class="th">'+p+"º lugar</div>" + g.series.map(s =>
+      '<div class="tr"><i style="background:'+s.cor+'"></i><span>'+s.nome+"</span><span>"+
+      DATA.tabelas[s.key][p-1]+" pts · "+Math.round(s.vals[p-1])+"%</span></div>").join("");
+    tip.style.opacity = 1;
+    tip.style.left = Math.min(X/sc + 16, r.width - tip.offsetWidth - 8) + "px";
+    tip.style.top = "10px";
+  };
+  hit.addEventListener("mousemove", mostra);
+  hit.addEventListener("mouseleave", () => { hov.style.opacity = 0; tip.style.opacity = 0; });
+}
+
+/* ---------------- painel: pontuação ---------------- */
+function painelPontuacao(){
+  const sec = el("section","panel"); sec.id = "p-pontuacao";
+  const w = el("div","wrap");
+  const head = el("div","panel-head"); head.appendChild(el("h2", null, "Pontuação"));
+  w.appendChild(head);
+  w.appendChild(el("p","section-intro",
+    "Primeiro como a IndyCar realmente pontua — a tabela, os bônus e a regra que mudou em 2023. "+
+    "Depois a comparação numérica entre as tabelas de pontos que as oito réguas usam."));
+
+  /* --- o sistema real --- */
+  w.appendChild(el("h3","subhead","O sistema da IndyCar hoje"));
+  const grade = el("div","grade");
+  const t = DATA.tabelas.indy;
+  for (let p = 1; p <= 25; p++){
+    const c = el("div","gp" + (p <= 3 ? " top" : "") + (p <= 10 ? " sc" : ""));
+    c.innerHTML = '<span class="gp-pos">'+p+"º</span><span class=\"gp-pts\">"+t[p-1]+"</span>";
+    grade.appendChild(c);
+  }
+  const cx = el("div","gp resto");
+  cx.innerHTML = '<span class="gp-pos">26º+</span><span class="gp-pts">5</span>';
+  grade.appendChild(cx);
+  w.appendChild(grade);
+  w.appendChild(el("p","note wide",
+    "Todo piloto que larga pontua: a tabela desce de 50 até 5 e nunca chega a zero. "+
+    "Numa categoria em que equipes pequenas disputam o ano inteiro, essa cauda é uma decisão deliberada — e é a maior diferença estrutural para a Fórmula 1."));
+
+  const bonus = el("div","bonuslist");
+  [["+1","Pole position","Em todas as etapas menos a Indy 500, e só quando há classificação."],
+   ["+1","Liderar uma volta","Basta cruzar a linha na frente uma vez durante a corrida."],
+   ["+2","Liderar mais voltas","Para quem liderar o maior número de voltas da prova."],
+   ["1–12","Classificação da Indy 500","Os doze pilotos do Fast 12 pontuam pela qualificação, de 12 pontos para o mais rápido."],
+   ["−10","Troca de motor","Perda de 10 pontos por troca feita antes de o motor cumprir a quilometragem exigida."]
+  ].forEach(([v,t2,d]) => {
+    const b = el("div","bonus");
+    b.innerHTML = '<span class="bv">'+v+'</span><span><b>'+t2+"</b><span>"+d+"</span></span>";
+    bonus.appendChild(b);
+  });
+  w.appendChild(bonus);
+  w.appendChild(el("p","note wide",
+    "Nenhuma das réguas desta página usa esses bônus: todas partem só da posição de chegada. "+
+    "É o que mantém a comparação limpa — a única variável entre duas colunas é a curva de pontos. "+
+    "Os bônus aparecem apenas na coluna “Oficial”, que reproduz a temporada como ela foi."));
+
+  /* --- a regra que mudou --- */
+  w.appendChild(el("h3","subhead","Os multiplicadores que a IndyCar já usou"));
+  const tl = el("div","timeline");
+  tl.innerHTML =
+    '<div class="era"><span class="eyebrow">2014</span><b>Dobro nas provas de 500 milhas</b>'+
+    "<p>Indy 500, Pocono e Fontana pagavam 100 pontos ao vencedor em vez de 50.</p></div>"+
+    '<div class="era"><span class="eyebrow">2015 – 2019</span><b>Dobro na Indy 500 e na final</b>'+
+    "<p>A última corrida do ano passou a valer o dobro também, fosse ela oval, misto ou rua.</p></div>"+
+    '<div class="era"><span class="eyebrow">2020 – 2022</span><b>Dobro só na Indy 500</b>'+
+    "<p>A final voltou ao peso normal. É sob esta versão que <b>2021</b> e <b>2022</b>, duas das seis temporadas "+
+    "desta página, foram disputadas.</p></div>"+
+    '<div class="era now"><span class="eyebrow">2023 – hoje</span><b>Nenhum multiplicador</b>'+
+    "<p>A IndyCar aboliu a dobra em fevereiro de 2023. O argumento do então presidente Jay Frye foi que a regra "+
+    "<em>nunca havia alterado quem ganhou um campeonato</em>, mas volta e meia prejudicava a posição final de equipes "+
+    "que disputavam o ano todo, à medida que o grid da Indy 500 crescia.</p></div>";
+  w.appendChild(tl);
+  w.appendChild(el("p","note wide",
+    "Isso muda o que a coluna <b>+Indy 500</b> significa em cada aba. Em 2021 e 2022 ela é a <em>regra da época</em>, "+
+    "e a régua base mostra como o ano teria terminado sem a dobra. De 2023 em diante a relação se inverte: a régua base "+
+    "é a regra em vigor e a coluna +Indy 500 vira uma proposta de reintroduzir o multiplicador. "+
+    "Os dados desta página dão razão a Frye — em seis temporadas, dobrar ou não a Indy 500 nunca trocou um campeão."));
+
+  w.appendChild(el("p","note wide",
+    'As oito réguas em si estão descritas na aba <a href="#p-reguas">As réguas</a>. '+
+    "O que segue é a comparação numérica entre as três tabelas de pontos usadas por elas."));
+
+  /* --- gráfico --- */
+  const g = grafico();
+  const fig = el("figure","chart");
+  fig.innerHTML =
+    '<div class="chart-title">O que cada tabela paga, em relação à vitória</div>'+
+    '<div class="chart-sub">Pontos de cada posição como porcentagem dos pontos de uma vitória — as três tabelas na mesma escala.</div>'+
+    '<div class="chartlegend">'+ CURVAS.map(c => '<span><i style="background:'+c.cor+'"></i>'+c.nome+"</span>").join("") +"</div>"+
+    '<div class="svgbox">'+ g.svg +'<div id="tip"></div></div>'+
+    "<figcaption>A IndyCar nunca desce muito: um décimo lugar ainda vale 40% de uma vitória e o último colocado leva 10%. "+
+    "A F1 desaba — o décimo vale 4% e o décimo primeiro, nada. A proposta “Indy 30” copia o degrau íngreme da F1 nos cinco "+
+    "primeiros e depois estica uma cauda rasa até o fim do grid, em vez de cortá-la.</figcaption>";
+  w.appendChild(fig);
+
+  const card = el("figure","chart");
+  let th = "<thead><tr><th>Tabela</th>";
+  for (let p = 1; p <= 15; p++) th += "<th>"+p+"º</th>";
+  th += "<th>20º</th><th>25º</th></tr></thead><tbody>";
+  CURVAS.forEach(c => {
+    const t2 = DATA.tabelas[c.key];
+    th += "<tr><td>"+c.nome+"</td>";
+    for (let p = 1; p <= 15; p++) th += "<td"+(t2[p-1]===0?' class="zero"':"")+">"+t2[p-1]+"</td>";
+    th += "<td"+(t2[19]===0?' class="zero"':"")+">"+t2[19]+"</td><td"+(t2[24]===0?' class="zero"':"")+">"+t2[24]+"</td></tr>";
+  });
+  th += "</tbody>";
+  card.innerHTML = '<div class="chart-title">Pontos por posição</div>'+
+    '<div class="chart-sub">Os mesmos números do gráfico, em valores absolutos.</div>'+
+    '<div style="overflow-x:auto"><table class="ptable">'+th+"</table></div>";
+  w.appendChild(card);
+
+  sec.appendChild(w);
+  setTimeout(() => ligarGrafico(g), 0);
+  return sec;
+}
+
+
+/* ---------------- painel: as réguas (abertura) ---------------- */
+const EXPLICA = [
+ {id:"indy", ex:"É a coluna verde nas tabelas de cada ano. As setas ▲▼ nas outras colunas contam quantas posições o piloto sobe ou desce em relação a ela."},
+ {id:"f1",   ex:"Em 2023, McLaughlin é terceiro na tabela da IndyCar com uma vitória e catorze top 10. Na da F1 ele cai para quinto e Newgarden, com quatro vitórias mas só onze top 10, assume o terceiro lugar."},
+ {id:"i500", ex:"Em 2022 é o que garante o quarto lugar a Ericsson, vencedor das 500 Milhas. Sem a dobra ele cai para sexto — duas posições que dependiam de uma corrida só."},
+ {id:"final",ex:"É a única régua que muda um campeão sem mexer no calendário: em 2024 dá o título a Herta, que venceu Nashville enquanto Palou terminava em décimo primeiro."},
+ {id:"ambas",ex:"Em 2024 os dois multiplicadores se anulam e o título volta para Palou, que foi quinto na Indy 500 — onde Herta foi vigésimo terceiro."},
+ {id:"hib",  ex:"Em 2024, com sete ovais em dezessete provas, é o bastante para fazer McLaughlin campeão no lugar de Palou."},
+ {id:"hib2", ex:"O contraste com a régua anterior é o mais forte da página: o mesmo McLaughlin de 2024 que era campeão com peso no oval cai para <b>quinto</b> com peso no misto. Em 2022, é a única régua em que Newgarden perde o vice para McLaughlin."},
+ {id:"i30",  ex:"Na prática ela se comporta como a tabela da F1 no topo do campeonato e como a da IndyCar no meio do pelotão. Em cinco dos seis anos devolve o mesmo top 5 da régua da F1."},
+];
+const TEXTO = {
+ indy:"A tabela que a IndyCar usa hoje: <b>50 pontos ao vencedor, 40 ao segundo, 35 ao terceiro</b>, descendo até 5 pontos para quem terminar em 25º ou pior. Todas as corridas do ano valem o mesmo. É a régua contra a qual as outras sete são comparadas.<br><br><b>Em 2021 e 2022 ela ganha um segundo sentido.</b> A Indy 500 valia pontos dobrados naqueles anos, então dar peso igual a todas as etapas equivale a <em>remover a dobra</em> — por isso a coluna aparece rotulada como “sem a dobra da Indy 500” nessas duas abas. É a resposta à pergunta: como o campeonato teria terminado se as 500 Milhas valessem o mesmo que as outras provas?",
+ f1:"A tabela da Fórmula 1 atual: <b>25-18-15-12-10-8-6-4-2-1</b>, sem o ponto de volta rápida (a F1 o aboliu em 2025). Duas diferenças grandes em relação à IndyCar.<br><br>A primeira é o <b>degrau do topo</b>: na IndyCar, o segundo lugar vale 80% de uma vitória; na F1, 72%. A segunda, e maior, é o <b>corte</b>: do décimo primeiro em diante ninguém pontua, enquanto na IndyCar até o último colocado leva 5 pontos. Na prática, favorece quem vence e faz pódio e penaliza quem termina muitas corridas entre o oitavo e o décimo quinto lugar.",
+ i500:"Mantém a tabela da IndyCar, mas as <b>500 Milhas de Indianápolis pagam o dobro</b>: 100 pontos ao vencedor em vez de 50, 80 ao segundo, e assim por diante.<br><br>Não é invenção — foi a regra real da IndyCar <b>de 2014 a 2022</b>, abolida em 2023. Por isso esta coluna significa coisas diferentes conforme o ano: em 2021 e 2022 ela é <em>o que de fato aconteceu</em>; de 2023 em diante é uma proposta de trazer a regra de volta.",
+ final:"A tabela da IndyCar com a <b>última corrida do ano valendo o dobro</b>, no espírito do finale da NASCAR. A ideia é impedir que o título seja decidido antes da prova final e garantir que a decisão tenha público.<br><br>É o multiplicador mais agressivo do conjunto, porque concentra o desempate numa corrida só — e é o único que efetivamente troca um campeão em seis temporadas.",
+ ambas:"As duas réguas anteriores aplicadas juntas: <b>Indy 500 e última etapa valendo o dobro</b>. Serve para testar o que acontece quando se privilegia ao mesmo tempo a corrida mais importante do ano e a que decide o campeonato.<br><br>O resultado é o melhor argumento contra multiplicadores em geral: eles podem se cancelar, e aí o campeão passa a depender de qual etapa alguém decidiu privilegiar.",
+ hib:"A única régua que <b>não mexe na curva de pontos</b> — ela muda o peso conforme o tipo de pista. Os <b>ovais</b> pagam pela tabela cheia da IndyCar (50 ao vencedor); os <b>circuitos mistos e de rua</b> pagam pela tabela da F1 (25 ao vencedor). Na prática, um oval passa a valer o dobro de um circuito misto.<br><br>A ideia é tratar as duas disciplinas como campeonatos de lógicas diferentes, já que exigem carros, pilotagem e coragem distintos. O efeito depende inteiramente de quantos ovais o calendário teve naquele ano.",
+ hib2:"O espelho da régua anterior: os <b>circuitos mistos e de rua</b> pagam pela tabela cheia da IndyCar (50 ao vencedor) e os <b>ovais</b> pagam pela tabela da F1 (25). Um misto passa a valer o dobro de um oval.<br><br>Não é uma proposta séria de regulamento — nenhuma categoria trataria a Indy 500 como meia corrida. Serve como experimento de controle: rodar as duas versões do híbrido mostra <em>quanto</em> do resultado de um ano dependia do equilíbrio entre ovais e mistos no calendário, e não do desempenho dos pilotos. Quanto mais um piloto se move entre as duas colunas, mais especializado ele era.",
+ i30:"Proposta própria, desenhada para corrigir os dois defeitos opostos das tabelas anteriores. A da <b>IndyCar achata demais o topo</b>: entre vencer e ficar em segundo vão apenas 20% de diferença, o que faz a regularidade valer mais que a vitória. A da <b>F1 corta cedo demais</b> para um grid de 27 carros em que equipes pequenas disputam o ano inteiro sem chance de top 10.<br><br>A Indy 30 usa <b>30-22-18-15-13-11-10-9-8-7-6-5-4-3-2</b> e 1 ponto do décimo sexto em diante. O degrau proporcional dos cinco primeiros é o mesmo da F1, mas a cauda continua pagando até o último colocado. E a Indy 500 vale <b>1,5×</b>: reconhece o peso da corrida sem dobrá-la.",
+};
+function painelReguas(){
+  const sec = el("section","panel"); sec.id = "p-reguas";
+  const w = el("div","wrap");
+  const head = el("div","panel-head"); head.appendChild(el("h2", null, "As réguas"));
+  w.appendChild(head);
+  w.appendChild(el("p","section-intro",
+    "Uma <b>régua</b> é um jeito de transformar a posição de chegada em pontos de campeonato. "+
+    "Esta página recalcula seis temporadas da IndyCar sob oito delas, para ver quais resultados dependiam do "+
+    "regulamento e quais eram inevitáveis. Todas usam <em>apenas</em> a ordem de chegada de cada prova — nenhuma "+
+    "paga pole, volta liderada ou liderança de mais voltas."));
+
+  const lista = el("div","reguas");
+  SIS.forEach((S, i) => {
+    const E = EXPLICA.find(e => e.id === S.id);
+    const d = el("article","regua" + (S.id === RULER ? " base" : ""));
+    d.innerHTML =
+      '<div class="rnum"><span>'+String(i+1).padStart(2,"0")+"</span>"+
+        (S.id === RULER ? '<span class="rbadge">base</span>' : "")+"</div>"+
+      '<div class="rbody"><h3>'+S.nome+"</h3>"+
+        '<div class="formula">'+FORMULAS[S.id]+"</div>"+
+        "<p>"+TEXTO[S.id]+"</p>"+
+        '<div class="exemplo"><span class="exlabel">Na prática</span>'+E.ex+"</div></div>";
+    lista.appendChild(d);
+  });
+  w.appendChild(lista);
+
+  /* precedente historico dos multiplicadores */
+  w.appendChild(el("h3","subhead","Três dessas réguas não são invenções"));
+  w.appendChild(el("p","note wide",
+    "Dobrar a pontuação de uma corrida soa como exercício de fã, mas é uma ideia que as duas categorias já "+
+    "colocaram em prática — e abandonaram. As réguas 03, 04 e 05 desta página reconstroem regras que existiram de verdade."));
+  const hist = el("div","hist");
+  [["IndyCar","2014","Dobro nas três provas de 500 milhas",
+    "Indy 500, Pocono e Fontana. Uma retomada de tradição: nos anos 1950 a Indy 500 chegou a valer 1000 pontos contra 200 de uma corrida comum."],
+   ["Fórmula 1","2014","Dobro na última corrida",
+    "Ideia de Bernie Ecclestone para segurar audiência até Abu Dhabi. Durou <b>uma temporada</b>: a reação de equipes e público foi tão ruim que a FIA a revogou antes de 2015. Não chegou a alterar o título — Hamilton venceria de qualquer forma. É exatamente a régua 04."],
+   ["IndyCar","2015–2019","Dobro na Indy 500 e na final",
+    "A final passou a valer o dobro independentemente de ser oval, misto ou rua. É exatamente a régua 05."],
+   ["IndyCar","2020–2022","Dobro só na Indy 500",
+    "A final voltou ao peso normal. É a régua 03, e é o sistema sob o qual as temporadas de 2021 e 2022 desta página foram disputadas."],
+   ["IndyCar","2023–hoje","Nenhum multiplicador",
+    "Todas as corridas valem igual. O então presidente Jay Frye justificou dizendo que a dobra <em>nunca havia alterado quem ganhou um campeonato</em> — o que os números desta página confirmam."]
+  ].forEach(([cat, ano, tit, txt]) => {
+    const h = el("div","hitem" + (ano === "2023–hoje" ? " atual" : ""));
+    h.innerHTML = '<div class="hmeta"><span class="hcat">'+cat+'</span><span class="hano">'+ano+"</span></div>"+
+      "<div><b>"+tit+"</b><p>"+txt+"</p></div>";
+    hist.appendChild(h);
+  });
+  w.appendChild(hist);
+  w.appendChild(el("p","note wide",
+    "As duas categorias chegaram à mesma conclusão por caminhos diferentes: a F1 desistiu em um ano por rejeição do "+
+    "público, a IndyCar em nove por constatar que a regra não mudava campeonatos. As abas de cada temporada mostram "+
+    "o que ela mudava de fato — quase sempre uma ou duas posições logo atrás do líder."));
+
+  /* como ler as tabelas */
+  w.appendChild(el("h3","subhead","Como ler as tabelas de cada ano"));
+  w.appendChild(el("p","note wide",
+    "Cada aba de temporada traz uma tabela com os dez primeiros do campeonato em cada régua, lado a lado. "+
+    "As colunas são as réguas; as linhas, as posições finais. A primeira coluna, <b>Oficial</b>, não é uma régua: "+
+    "é a classificação real daquele ano, com os bônus e a dobra da Indy 500 como valiam na época."));
+  const guia = el("div","guia");
+  [["<span class=\"sw\" style=\"background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)\"></span>",
+    "Coluna verde", "É a régua base — a tabela da IndyCar com todas as etapas valendo o mesmo. Tudo é comparado a ela."],
+   ['<span class="dl up">▲2</span>',
+    "Seta e número", "Quantas posições o piloto sobe (verde) ou cai (laranja) naquela régua em relação à coluna verde. Sem seta, ficou no mesmo lugar."],
+   ["<span class=\"sw\" style=\"background:var(--gold-soft);box-shadow:inset 0 0 0 1px var(--gold)\"></span>",
+    "Faixa dourada", "Marca uma régua que produz um campeão diferente. Acontece duas vezes em seis anos, ambas em 2024."],
+   ['<span class="gnum">548</span>',
+    "Número menor", "O total de pontos do piloto naquela régua. Só faz sentido comparar dentro da mesma coluna — cada tabela tem sua própria escala."]
+  ].forEach(([ic, t, d]) => {
+    const g = el("div","gitem");
+    g.innerHTML = '<div class="gic">'+ic+"</div><div><b>"+t+"</b><p>"+d+"</p></div>";
+    guia.appendChild(g);
+  });
+  w.appendChild(guia);
+  w.appendChild(el("p","note wide",
+    'A aba <a href="#p-pontuacao">Pontuação</a> traz a tabela oficial da IndyCar em detalhe, os bônus que ela paga, '+
+    "a história da dobra da Indy 500 e a comparação numérica entre as curvas."));
+  sec.appendChild(w);
+  return sec;
+}
+
+/* ---------------- painel: panorama ---------------- */
+function painelPanorama(){
+  const sec = el("section","panel"); sec.id = "p-panorama";
+  const w = el("div","wrap");
+  const head = el("div","panel-head"); head.appendChild(el("h2", null, "Panorama"));
+  w.appendChild(head);
+
+  let trocas = 0, total = 0, reord = 0;
+  ANOS.forEach(a => {
+    const A = DATA.anos[a], base = A.rank[RULER];
+    SIS.forEach(S => {
+      total++;
+      if (A.rank[S.id][0] !== base[0]) trocas++;
+      if (S.id !== RULER && A.rank[S.id].slice(0,5).join("|") !== base.slice(0,5).join("|")) reord++;
+    });
+  });
+  w.appendChild(el("p","section-intro",
+    "Seis temporadas × oito réguas = <b>"+total+"</b> campeonatos recalculados. Confrontadas com a régua base, as sete "+
+    "réguas alternativas reordenam o top 5 em <b>"+reord+"</b> das <b>"+(6*(SIS.length-1))+"</b> comparações — mas o troféu "+
+    "só troca de dono em <b>"+trocas+"</b> delas, ambas em 2024."));
+
+  const tb = el("table","grid2");
+  let h = "<thead><tr><th>Ano</th>";
+  SIS.forEach(S => h += "<th>"+S.curta+"</th>");
+  h += "</tr></thead><tbody>";
+  ANOS.forEach(a => {
+    const A = DATA.anos[a], b = A.rank[RULER][0];
+    h += '<tr><td class="yr">'+a+(A.i500_epoca?'<span class="mini">Indy 500 ×2</span>':"")+"</td>";
+    SIS.forEach(S => {
+      const c = A.rank[S.id][0];
+      h += '<td class="'+(c === b ? "same" : "chg")+'">'+short(c)+"</td>";
+    });
+    h += "</tr>";
+  });
+  tb.innerHTML = h + "</tbody>";
+  w.appendChild(tb);
+
+  const grid = el("div","fourup");
+  [["Quem a régua favorece",
+    "O padrão se repete nos seis anos: quem sobe quando se aperta a curva tem <strong>vitórias e pódios</strong>; quem cai tem <strong>presença</strong>. Newgarden ganha duas posições em 2023, McLaughlin uma em 2022, Lundgaard duas em 2025. Dixon cai em quase todo ano em que aparece no top 5 — é o piloto mais penalizado do conjunto por qualquer régua que se afaste da IndyCar."],
+   ["Por que o campeão quase nunca muda",
+    "Porque na IndyCar recente o campeão costuma vencer as duas disputas ao mesmo tempo. Palou lidera em vitórias <em>e</em> em regularidade em 2021, 2023, 2025 e 2026, e aí nenhuma curva de pontos importa. A exceção é 2024, o único ano em que os cinco primeiros terminaram com duas ou três vitórias cada — e foi exatamente ali que o título trocou de mãos duas vezes."],
+   ["A dobra da Indy 500 não decide nada",
+    "Foi o que a IndyCar alegou ao abolir a regra em 2023, e os números confirmam: em nenhuma das seis temporadas dobrar ou não a Indy 500 troca o campeão. O efeito é de uma ou duas posições logo atrás — em 2022, remover a dobra tira Ericsson, vencedor das 500 Milhas, do quarto para o sexto lugar. Dobrar a <em>final</em>, sim, é outra coisa: foi o que deu o título de 2024 a Herta."],
+   ["O que os dois híbridos revelam",
+    "Rodar o mesmo ano com peso no oval e depois com peso no misto mede o quanto um piloto era especialista. O contraste extremo é <strong>McLaughlin em 2024</strong>: campeão numa régua, quinto na outra. São as únicas réguas que mudam um título sem multiplicador nenhum — elas não reordenam a curva de pontos, reordenam o calendário."]
+  ].forEach(([t,p]) => {
+    const d = el("div");
+    d.appendChild(el("h3","subhead sm", t));
+    d.appendChild(el("div","prose sm", "<p>"+p+"</p>"));
+    grid.appendChild(d);
+  });
+  w.appendChild(grid);
+  w.appendChild(el("div","blockquote",
+    "A tabela da IndyCar é muito mais achatada que a da F1 — mas em seis temporadas isso quase nunca decidiu um campeonato. Só decide quando o ano é apertado, e aí decide de formas contraditórias."));
+  sec.appendChild(w);
+  return sec;
+}
+
+/* ---------------- montagem ---------------- */
+const main = document.getElementById("app");
+main.appendChild(painelReguas());
+ANOS.forEach(a => main.appendChild(painelAno(a)));
+main.appendChild(painelPanorama());
+main.appendChild(painelPontuacao());
+
+const bar = document.getElementById("tabs");
+const abas = [["As réguas","p-reguas"]].concat(ANOS.map(a => [a, "p-"+a]))
+  .concat([["Panorama","p-panorama"], ["Pontuação","p-pontuacao"]]);
+abas.forEach(([rot,id], i) => {
+  const b = el("button","tab"+(rot === "Panorama" ? " sep" : ""), rot);
+  b.type = "button"; b.setAttribute("role","tab"); b.dataset.target = id;
+  b.setAttribute("aria-selected", i === 0 ? "true" : "false");
+  b.addEventListener("click", () => selecionar(id));
+  bar.appendChild(b);
+});
+function selecionar(id){
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id === id));
+  document.querySelectorAll(".tab").forEach(t =>
+    t.setAttribute("aria-selected", t.dataset.target === id ? "true" : "false"));
+  if (location.hash.slice(1) !== id) history.replaceState(null, "", "#" + id);
+  window.scrollTo({top: 0, behavior: "instant"});
+}
+selecionar(document.getElementById(location.hash.slice(1)) ? location.hash.slice(1) : "p-reguas");
+
+document.addEventListener("mouseover", e => {
+  const td = e.target.closest("td[data-driver]");
+  document.querySelectorAll("td.hl").forEach(n => n.classList.remove("hl"));
+  if (!td) return;
+  td.closest(".panel").querySelectorAll('td[data-driver="'+CSS.escape(td.dataset.driver)+'"]')
+    .forEach(n => n.classList.add("hl"));
+});
+document.addEventListener("click", e => {
+  const a = e.target.closest('a[href^="#p-"]');
+  if (!a) return;
+  e.preventDefault(); selecionar(a.getAttribute("href").slice(1));
+});
+document.getElementById("theme").addEventListener("click", () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const escuro = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.setAttribute("data-theme", escuro ? "light" : "dark");
+});
+
+</script>
+</body>
+</html>
