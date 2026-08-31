@@ -167,7 +167,7 @@ __CSS__
       <h4>Fontes</h4>
       <p>Pontos e classificação oficial: arquivos <code>Indy2021.txt</code> … <code>Indy2026.txt</code>, cuja soma
       confere com o total de cada piloto nos seis anos. Posições de chegada, calendários e tipo de piso: tabelas de
-      classificação das temporadas na Wikipédia — que conferem com os arquivos em 1698 das 1700 células comparáveis.</p>
+      classificação das temporadas na Wikipédia — que conferem com os arquivos em 2419 das 2421 células comparáveis (99,92%).</p>
     </div>
   </div>
 </footer>

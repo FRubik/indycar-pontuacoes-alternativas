@@ -72,7 +72,7 @@ Duas fontes, cruzadas uma contra a outra:
 - **Posições de chegada, calendários e tipo de piso (oval / misto / rua)** — extraídos do
   wikitext das páginas `20XX IndyCar Series` da Wikipédia.
 
-As duas fontes concordam em **1698 das 1700 células comparáveis**; as duas exceções são casos
+As duas fontes concordam em **2419 das 2421 células comparáveis** (99,92%); as duas exceções são casos
 de não-largada em 2025, em que o arquivo atribui posição e a Wikipédia deixa vazio. Por isso a
 Wikipédia é a fonte das posições e os `.txt` entram só com os pontos oficiais.
 

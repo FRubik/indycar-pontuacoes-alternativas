@@ -50,38 +50,63 @@ def parse_txt(path):
 def sobrenome_txt(d):
     return norm(re.sub(r"^[A-Z]\.\s+", "", d))
 
-RES = {}
-print("VALIDAÇÃO — posição do arquivo vs posição da Wikipédia\n")
+print("VALIDAÇÃO — posições do .txt confrontadas com as da Wikipédia")
+print("(uma coluna do .txt sem posição para nenhum piloto é um fim de semana de prova")
+print(" dupla somado numa célula só, e cobre duas corridas da Wikipédia)\n")
+
+total_ok = total_falha = 0
 for f in sorted(glob.glob(os.path.join(DIR, "Indy*.txt"))):
     ano = re.search(r"\d{4}", f).group()
     txt = parse_txt(f)
     wk = W[ano]
     drop = set(DESCARTAR.get(ano, []))
     corridas = [c for i, c in enumerate(wk["corridas"]) if i not in drop]
-    wpos = {}
-    for nome, r in wk["pilotos"].items():
-        wpos[sobrenome_wiki(nome)] = [v for i, v in enumerate(r) if i not in drop]
+    wpos = {sobrenome_wiki(n): [v for i, v in enumerate(r) if i not in drop]
+            for n, r in wk["pilotos"].items()}
 
-    # mapear colunas do txt -> indices de corrida da wiki
-    # colunas do txt sao 1:1 com corridas, exceto as combinadas (2 corridas numa coluna)
     ncols = max(len(x["races"]) for x in txt)
-    ok = falha = 0; problemas = []
+    # quantas corridas cada coluna do .txt cobre: 2 quando ninguém tem posição nela
+    largura = []
+    for c in range(ncols):
+        tem_pos = any(c < len(x["races"]) and x["races"][c][1] is not None for x in txt)
+        tem_pts = any(c < len(x["races"]) and x["races"][c][0] is not None for x in txt)
+        largura.append(1 if tem_pos else (2 if tem_pts else 1))
+    # índice da corrida da Wikipédia em que cada coluna começa
+    inicio, acc = [], 0
+    for w in largura:
+        inicio.append(acc); acc += w
+
+    ok = falha = 0
+    problemas = []
     for x in txt:
         sn = sobrenome_txt(x["driver"])
-        if sn not in wpos: problemas.append(f"  {ano}: piloto sem par na Wikipédia: {x['driver']}"); continue
+        if sn not in wpos:
+            problemas.append(f"    {x['driver']}: sem par na Wikipédia")
+            continue
         wr = wpos[sn]
-        # alinhamento: percorre colunas do txt consumindo corridas da wiki
-        ci = 0
-        for col in range(ncols):
-            if col >= len(x["races"]): break
-            pts, pos = x["races"][col]
-            if pos is not None:
-                if ci < len(wr) and wr[ci] == pos: ok += 1
-                else:
-                    falha += 1
-                    problemas.append(f"  {ano} {x['driver']} col{col+1}: txt P{pos} vs wiki P{wr[ci] if ci<len(wr) else '—'}")
-                ci += 1
+        for c in range(min(ncols, len(x["races"]))):
+            if largura[c] != 1:      # coluna combinada: não há posição para comparar
+                continue
+            pos = x["races"][c][1]
+            if pos is None:
+                continue
+            i = inicio[c]
+            esperado = wr[i] if i < len(wr) else None
+            if esperado == pos:
+                ok += 1
             else:
-                ci += 1
-    print(f"{ano}: {ok} posições conferem, {falha} divergem" + (" ✓" if falha == 0 else " ✗"))
-    for p in problemas[:6]: print(p)
+                falha += 1
+                problemas.append(f"    {x['driver']} col{c+1} ({corridas[i]}): "
+                                 f".txt P{pos} vs Wikipédia P{esperado}")
+    total_ok += ok; total_falha += falha
+    comb = [i+1 for i, w in enumerate(largura) if w == 2]
+    print(f"  {ano}: {ok} conferem, {falha} divergem"
+          + (f" · colunas duplas: {comb}" if comb else "")
+          + ("  ✓" if falha == 0 else "  ✗"))
+    for pr in problemas[:5]:
+        print(pr)
+
+print(f"\n  TOTAL: {total_ok} posições conferem, {total_falha} divergem "
+      f"({total_ok/(total_ok+total_falha)*100:.2f}% de acordo)")
+print("\n  As divergências conhecidas são casos de não-largada em que o .txt atribui uma")
+print("  posição e a Wikipédia deixa a célula vazia. A Wikipédia é a fonte usada na página.")
