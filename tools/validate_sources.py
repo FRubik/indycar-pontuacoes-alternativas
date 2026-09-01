@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+"""Confere os .txt (pontos oficiais) contra as posições extraídas da Wikipédia.
+
+O alinhamento entre as colunas do .txt e as corridas da Wikipédia não pode ser posicional:
+ao copiar a tabela perdem-se os `colspan` dos fins de semana de prova dupla, e alguns
+arquivos estão na ordem cronológica original, não na ordem em que a Wikipédia lista as
+provas remarcadas. Cada coluna é, portanto, casada com a corrida que ela mais explica.
+"""
 import os, pathlib
 AQUI = pathlib.Path(__file__).resolve().parent
 RAIZ = AQUI.parent
@@ -51,10 +58,11 @@ def sobrenome_txt(d):
     return norm(re.sub(r"^[A-Z]\.\s+", "", d))
 
 print("VALIDAÇÃO — posições do .txt confrontadas com as da Wikipédia")
-print("(uma coluna do .txt sem posição para nenhum piloto é um fim de semana de prova")
-print(" dupla somado numa célula só, e cobre duas corridas da Wikipédia)\n")
+print("(cada coluna do .txt é casada com a corrida da Wikipédia que ela mais explica;")
+print(" uma coluna sem posição nenhuma é um fim de semana de prova dupla somado numa célula só)\n")
 
 total_ok = total_falha = 0
+alertas = []
 for f in sorted(glob.glob(os.path.join(DIR, "Indy*.txt"))):
     ano = re.search(r"\d{4}", f).group()
     txt = parse_txt(f)
@@ -64,49 +72,73 @@ for f in sorted(glob.glob(os.path.join(DIR, "Indy*.txt"))):
     wpos = {sobrenome_wiki(n): [v for i, v in enumerate(r) if i not in drop]
             for n, r in wk["pilotos"].items()}
 
+    pares = [(x, wpos[sobrenome_txt(x["driver"])]) for x in txt
+             if sobrenome_txt(x["driver"]) in wpos]
+    sem_par = [x["driver"] for x in txt if sobrenome_txt(x["driver"]) not in wpos]
     ncols = max(len(x["races"]) for x in txt)
-    # quantas corridas cada coluna do .txt cobre: 2 quando ninguém tem posição nela
-    largura = []
+
+    def confronto(c, i):
+        """Quantas posições batem e quantas divergem entre a coluna c e a corrida i."""
+        ok = falha = 0
+        for x, wr in pares:
+            p = x["races"][c][1] if c < len(x["races"]) else None
+            if p is None: continue
+            if wr[i] == p: ok += 1
+            else: falha += 1
+        return ok, falha
+
+    # cada coluna com posições vai para a corrida que ela melhor explica; sem posição
+    # nenhuma, a coluna é uma prova dupla somada (se tem pontos) ou está vazia
+    mapa, duplas, vazias = {}, [], []
     for c in range(ncols):
-        tem_pos = any(c < len(x["races"]) and x["races"][c][1] is not None for x in txt)
-        tem_pts = any(c < len(x["races"]) and x["races"][c][0] is not None for x in txt)
-        largura.append(1 if tem_pos else (2 if tem_pts else 1))
-    # índice da corrida da Wikipédia em que cada coluna começa
-    inicio, acc = [], 0
-    for w in largura:
-        inicio.append(acc); acc += w
+        tem = lambda k: any(c < len(x["races"]) and x["races"][c][k] is not None for x, _ in pares)
+        if not tem(1):
+            (duplas if tem(0) else vazias).append(c); continue
+        mapa[c] = max(range(len(corridas)), key=lambda i: confronto(c, i)[0])
 
     ok = falha = 0
     problemas = []
-    for x in txt:
-        sn = sobrenome_txt(x["driver"])
-        if sn not in wpos:
-            problemas.append(f"    {x['driver']}: sem par na Wikipédia")
-            continue
-        wr = wpos[sn]
-        for c in range(min(ncols, len(x["races"]))):
-            if largura[c] != 1:      # coluna combinada: não há posição para comparar
-                continue
-            pos = x["races"][c][1]
-            if pos is None:
-                continue
-            i = inicio[c]
-            esperado = wr[i] if i < len(wr) else None
-            if esperado == pos:
-                ok += 1
+    for c, i in sorted(mapa.items()):
+        for x, wr in pares:
+            p = x["races"][c][1] if c < len(x["races"]) else None
+            if p is None: continue
+            if wr[i] == p: ok += 1
             else:
                 falha += 1
                 problemas.append(f"    {x['driver']} col{c+1} ({corridas[i]}): "
-                                 f".txt P{pos} vs Wikipédia P{esperado}")
+                                 f".txt P{p} vs Wikipédia P{wr[i]}")
     total_ok += ok; total_falha += falha
-    comb = [i+1 for i, w in enumerate(largura) if w == 2]
-    print(f"  {ano}: {ok} conferem, {falha} divergem"
-          + (f" · colunas duplas: {comb}" if comb else "")
-          + ("  ✓" if falha == 0 else "  ✗"))
+
+    # estrutura: colunas duplas, corridas ausentes e soma dos pontos
+    cobertas = set(mapa.values())
+    livres = [i for i in range(len(corridas)) if i not in cobertas]
+    # cada coluna dupla cobre duas corridas; o que sobrar não veio no arquivo
+    corrida_vazia = lambda i: all(wr[i] is None for _, wr in pares)   # ainda não disputada
+    ausentes = [i for i in livres[2*len(duplas):] if not corrida_vazia(i)]
+    soma_ruim = sum(1 for x in txt
+                    if sum(p for p, _ in x["races"] if p is not None) != x["total"])
+
+    est = []
+    if duplas:   est.append(f"colunas duplas: {[c+1 for c in duplas]}")
+    if vazias:   est.append(f"colunas vazias: {[c+1 for c in vazias]}")
+    if ausentes: est.append("AUSENTES no .txt: " + ", ".join(corridas[i] for i in ausentes))
+    if soma_ruim: est.append(f"soma ≠ total em {soma_ruim} de {len(txt)} pilotos")
+    if sem_par:  est.append(f"sem par na Wikipédia: {sem_par}")
+    fora_de_ordem = sorted(mapa) != [c for c, _ in sorted(mapa.items(), key=lambda kv: kv[1])]
+    if fora_de_ordem: est.append("colunas fora da ordem da Wikipédia")
+
+    print(f"  {ano}: {ok} conferem, {falha} divergem" + ("  ✓" if falha == 0 else "  ✗")
+          + ("".join("\n         · " + e for e in est)))
     for pr in problemas[:5]:
         print(pr)
+    if ausentes or soma_ruim:
+        alertas.append(ano)
 
 print(f"\n  TOTAL: {total_ok} posições conferem, {total_falha} divergem "
       f"({total_ok/(total_ok+total_falha)*100:.2f}% de acordo)")
 print("\n  As divergências conhecidas são casos de não-largada em que o .txt atribui uma")
-print("  posição e a Wikipédia deixa a célula vazia. A Wikipédia é a fonte usada na página.")
+print("  posição e a Wikipédia deixa a célula vazia. A Wikipédia é a fonte usada na página,")
+print("  então nada disso afeta os cálculos: do .txt vêm só o total e a classificação oficial.")
+if alertas:
+    print(f"\n  ATENÇÃO — arquivo incompleto em: {', '.join(alertas)}. Os totais oficiais continuam")
+    print("  corretos (é o que a página usa do .txt), mas a soma das colunas não fecha com eles.")

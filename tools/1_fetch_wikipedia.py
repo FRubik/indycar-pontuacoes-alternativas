@@ -32,6 +32,14 @@ def strip_markup(s):
     s = s.replace("{{","").replace("}}","").replace("|","")
     return s.strip()
 
+# Atributos de célula antes da barra: `valign=middle colspan="2"|Conteúdo`. A barra de um
+# wikilink ([[Alvo|Rótulo]]) não é confundida porque `[[` não casa com o padrão de atributo.
+ATRIBS = re.compile(r'^\s*((?:[a-zA-Z-]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s|]+)\s*)+)\|')
+def sep_atribs(c):
+    """Separa os atributos do conteúdo da célula."""
+    m = ATRIBS.match(c)
+    return (m.group(1), c[m.end():].strip()) if m else ("", c.strip())
+
 def norm(s):
     s = unicodedata.normalize("NFD", s)
     return "".join(c for c in s if unicodedata.category(c) != "Mn").lower()
@@ -50,13 +58,13 @@ def parse(path):
     for ln in linhas:
         t = ln.strip()
         if not t.startswith("!"): continue
-        conteudo = t[1:].strip()
+        atribs, conteudo = sep_atribs(t[1:].strip())
         if re.match(r"^Driver\b", conteudo): dentro = True; continue
         if not dentro: continue
         if re.match(r"^(Pts|Points)\b", conteudo): break
-        mc = re.search(r'colspan\s*=\s*"?(\d+)"?', conteudo)
+        mc = re.search(r'colspan\s*=\s*"?(\d+)"?', atribs)
         n = int(mc.group(1)) if mc else 1
-        nome = strip_markup(re.sub(r'^\s*colspan\s*=\s*"?\d+"?\s*\|', "", conteudo))
+        nome = strip_markup(conteudo)
         for x in range(n):
             corridas.append(nome + ("" if n == 1 else " " + str(x+1)))
 
@@ -73,10 +81,7 @@ def parse(path):
         for ln in corpo.split("\n"):
             t = ln.strip()
             if not t.startswith("|") or t.startswith("|-"): continue
-            v = t[1:]
-            if "|" in v and re.match(r'^\s*(style|align|colspan|rowspan|class|bgcolor)', v):
-                v = v.split("|", 1)[1]
-            cels.append(strip_markup(v))
+            cels.append(strip_markup(sep_atribs(t[1:])[1]))
         res = []
         for c in cels[:len(corridas)]:
             mm = re.match(r"^(\d+)", c)
@@ -87,7 +92,7 @@ def parse(path):
 
 if __name__ == "__main__":
     saida = {}
-    for y in ["2021","2022","2023","2024","2025","2026"]:
+    for y in ["2016","2017","2018","2019","2020","2021","2022","2023","2024","2025","2026"]:
         corridas, pil = parse(baixa(y))
         saida[y] = dict(corridas=corridas, pilotos={n: r for n, r in pil})
         print(f"{y}: {len(corridas)} corridas, {len(pil)} pilotos")

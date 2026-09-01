@@ -56,6 +56,6 @@ for ano,A in D.items():
                      pend=(e["nome"] in A["pendentes"])) for i,e in enumerate(A["etapas"])],
         n_etapas=A["n_etapas"],n_disp=A["n_disputadas"],pendentes=A["pendentes"],
         n_ovais=A["n_ovais"],i500_round=A["i500_round"],final=A["final_nome"],
-        final_real=A["final_real"],i500_epoca=A["i500_dobrada_epoca"])
+        final_real=A["final_real"],epoca=A["epoca"])
 json.dump(out, open(AQUI / "slim2.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",",":"))
 print("slim2.json:", (AQUI / "slim2.json").stat().st_size, "bytes")

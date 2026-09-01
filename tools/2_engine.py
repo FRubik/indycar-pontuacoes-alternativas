@@ -9,7 +9,12 @@ import re, json, glob, os, unicodedata
 W = json.load(open(AQUI / "wiki_pos.json", encoding="utf-8"))
 DESCARTAR = {"2024": [1]}          # Thermal 2024: evento sem pontos de campeonato
 ALIAS = {"veekay": "van kalmthout"}
-I500_DOBRADA_ATE = 2022            # a Indy 500 valeu pontos dobrados de 2014 a 2022
+# Multiplicadores que a IndyCar realmente aplicou. De 2015 a 2019 a Indy 500 e a última
+# etapa valiam dobro; de 2020 a 2022 só a Indy 500; de 2023 em diante, nenhum.
+def regra_epoca(ano):
+    if ano <= 2019: return "ambas"
+    if ano <= 2022: return "i500"
+    return ""
 
 PISTAS = {
  "BAR":("Barber","road"), "STP":("St. Petersburg","street"), "TMS":("Texas","oval"),
@@ -21,6 +26,8 @@ PISTAS = {
  "LBH":("Long Beach","street"), "TOR":("Toronto","street"), "IOW":("Iowa","oval"),
  "THE":("Thermal Club","road"), "MIL":("Milwaukee","oval"), "PHX":("Phoenix","oval"),
  "ARL":("Arlington","street"), "MRK":("Markham","street"), "D.C.":("Washington D.C.","street"),
+ "POC":("Pocono","oval"), "WGL":("Watkins Glen","road"), "SON":("Sonoma","road"),
+ "IMS":("GP de Indianápolis","road"), "COA":("Circuit of the Americas","road"),
 }
 def pista(sig):
     m = re.match(r"^([A-Z.]+?)(\d*)\s*(\d*)$", sig.strip())
@@ -155,15 +162,16 @@ for f in arquivos:
         i500_idx=idx_i500,i500_round=idx_i500+1,final_nome=etapas[idx_final]["nome"],
         final_idx=idx_final,final_real=(idx_final==len(etapas)-1),
         n_ovais=sum(1 for e in etapas if e["tipo"]=="oval"),
-        i500_dobrada_epoca=(ai<=I500_DOBRADA_ATE))
+        epoca=regra_epoca(ai))
 
 print("\n".join(relat))
 print()
 for ano,A in DADOS.items():
     camps={S["curta"]:A["rank"][S["id"]][0] for S in SISTEMAS}
     dif=set(camps.values())
-    print(f"{ano} ({A['n_disputadas']}/{A['n_etapas']} etapas, {A['n_ovais']} ovais, "
-          f"Indy500 {'DOBRADA na época' if A['i500_dobrada_epoca'] else 'peso normal'}) "
+    ep = {"ambas":"Indy 500 e final DOBRADAS na época","i500":"Indy 500 DOBRADA na época",
+          "":"sem multiplicador na época"}[A["epoca"]]
+    print(f"{ano} ({A['n_disputadas']}/{A['n_etapas']} etapas, {A['n_ovais']} ovais, {ep}) "
           f"campeões: {dif if len(dif)>1 else list(dif)[0]}")
     for S in SISTEMAS:
         print(f"   {S['curta']:<11} " + ", ".join(f"{i+1}.{d.split('. ')[-1]}" for i,d in enumerate(A['rank'][S['id']][:5])))
